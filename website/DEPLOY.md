@@ -1,86 +1,66 @@
-# 部署指南 — Gitee Pages（国内推荐）
+# 部署指南 — 国内访问推荐
 
-本网站是纯静态页面。部署到 **Gitee Pages** 后，国内手机/电脑可直接访问，**无需翻墙**。
+## ⚠️ 关于 Gitee Pages
 
-## 访问地址
+**Gitee Pages 已于 2024 年 5 月正式下线**，官方已移除入口，所以在仓库「服务」菜单里**找不到 Gitee Pages 是正常的**，不是操作问题。
 
-部署成功后：
-
-```
-https://你的Gitee用户名.gitee.io/jack-blog/
-```
-
-例如：`https://jackiscoding.gitee.io/jack-blog/`
+详见 [Gitee 官方反馈](https://gitee.com/oschina/git-osc/issues/IJR1TI)。
 
 ---
 
-## 第一次部署
+## 推荐方案（国内无需翻墙）
 
-### 1. 注册并实名认证 Gitee
+### 方案 A：EdgeOne Pages（推荐，免费 + 国内快）
 
-1. 打开 [gitee.com](https://gitee.com) 注册账号
-2. 完成**实名认证**（免费 Pages 必须实名）
+腾讯云 EdgeOne 提供的免费静态托管，适合个人博客。
 
-### 2. 创建仓库
-
-1. 点击右上角 **+** → **新建仓库**
-2. 仓库名：`jack-blog`
-3. 选 **公开**
-4. **不要**勾选「使用 Readme 初始化」
-5. 创建
-
-### 3. 推送代码
-
-在项目根目录执行：
+1. 打开 [EdgeOne Pages](https://pages.edgeone.ai/)
+2. 注册 / 登录
+3. 选择 **Pages Drop** 或 **上传部署**
+4. 打包网站：
 
 ```bash
 cd ~/CLionProjects/Jack
-
-# 添加 Gitee 远程（只需一次，用户名改成你的）
-git remote add gitee https://gitee.com/你的用户名/jack-blog.git
-
-# 推送
-git push -u gitee main
+chmod +x scripts/package-website.sh
+./scripts/package-website.sh
 ```
 
-> 若提示输入密码，使用 Gitee 账号密码或**私人令牌**（设置 → 私人令牌）。
-
-也可使用脚本：
-
-```bash
-chmod +x scripts/push-gitee.sh
-./scripts/push-gitee.sh
-```
-
-### 4. 开启 Gitee Pages
-
-1. 打开仓库 → **服务** → **Gitee Pages**
-2. 选择分支：**main**
-3. 部署目录：由 **`.gitee-ci.yml`** 自动处理（`website/` 内容）
-4. 点击 **启动** / **更新**
-
-等待 1–3 分钟，状态变为「部署成功」即可访问。
-
-### 5. 手机访问
-
-浏览器打开：`https://你的用户名.gitee.io/jack-blog/`
+5. 将生成的 `jack-blog-site.zip` 或整个 `website/` 文件夹拖入上传
+6. 获得类似 `https://xxx.edgeone.app` 的访问链接，手机可直接打开
 
 ---
 
-## 更新网站
+### 方案 B：上码 Upma（国内线路优化）
 
-```bash
-cd ~/CLionProjects/Jack
+1. 打开 [upma.cn](https://www.upma.cn/)
+2. 注册账号
+3. 新建项目 → 上传 `website/` 文件夹或 `jack-blog-site.zip`
+4. 获得访问链接，可绑定自定义域名
 
-# 若新增了文章，先生成索引
-python3 website/scripts/generate-manifest.py
+---
 
-git add .
-git commit -m "更新网站内容"
-git push gitee main
-```
+### 方案 C：Cloudflare Pages（连接 GitHub 自动部署）
 
-推送后到 **Gitee Pages** 页面点 **更新**，或等待 CI 自动部署。
+国内访问比 GitHub Pages 略好，推送代码后自动更新。
+
+1. 打开 [Cloudflare Pages](https://pages.cloudflare.com/)
+2. **Create a project** → 连接 GitHub 账号
+3. 选择仓库 `JackisCoding/jack-blog`
+4. 构建设置：
+   - **Framework preset**：None
+   - **Build command**：（留空）
+   - **Build output directory**：`website`
+5. 部署完成后获得 `https://jack-blog.pages.dev` 类似链接
+
+---
+
+### 方案 D：GitHub Pages（已配置，国内不稳定）
+
+已自动部署，地址：
+
+**https://jackiscoding.github.io/jack-blog/**
+
+国内有时能打开、有时慢或超时，**不适合作为国内主要访问方式**。网站资源已本地化，若偶尔能连上 GitHub 则体验尚可。
 
 ---
 
@@ -95,20 +75,30 @@ python3 -m http.server 8888
 
 ---
 
-## 国内优化说明
+## 更新网站内容
 
-网站已做国内访问优化：
+```bash
+cd ~/CLionProjects/Jack
 
-- 字体使用系统字体（微软雅黑、PingFang 等），不依赖 Google Fonts
-- Tailwind、marked.js 已下载到本地 `js/vendor/`，不依赖境外 CDN
+# 新增文章后生成索引
+python3 website/scripts/generate-manifest.py
+
+git add .
+git commit -m "更新内容"
+git push origin main          # 更新 GitHub Pages
+```
+
+若使用 EdgeOne / Upma 拖拽部署，更新后重新打包上传即可：
+
+```bash
+./scripts/package-website.sh
+# 再到平台上传新的 zip
+```
 
 ---
 
-## GitHub Pages（可选）
+## 国内优化（已完成）
 
-GitHub 部署仍保留在 `.github/workflows/deploy.yml`，可同时推送到两个平台：
-
-```bash
-git push origin main   # GitHub
-git push gitee main    # Gitee（国内推荐）
-```
+- ✅ 字体：系统字体，不依赖 Google Fonts
+- ✅ Tailwind / marked.js：本地 `js/vendor/`，不依赖境外 CDN
+- ✅ 图片、文章：全部在仓库内，无外部依赖
