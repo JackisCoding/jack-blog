@@ -577,7 +577,7 @@ html.theme-animate *::after {
   left: 0;
   pointer-events: none;
   z-index: 10000;
-  will-change: transform;
+  will-change: left, top;
 }
 
 .fx-cursor-dot {
@@ -586,11 +586,11 @@ html.theme-animate *::after {
   border-radius: 50%;
   background: var(--color-accent);
   box-shadow: 0 0 10px var(--color-accent), 0 0 20px rgba(190, 59, 64, 0.45);
-  transition: transform 0.15s ease, box-shadow 0.2s ease;
+  transform: translate(-50%, -50%);
+  transition: box-shadow 0.2s ease;
 }
 
 .fx-cursor-dot--hover {
-  transform: translate(-50%, -50%) scale(1.35);
   box-shadow: 0 0 14px var(--color-accent), 0 0 28px rgba(190, 59, 64, 0.55);
 }
 
@@ -599,7 +599,8 @@ html.theme-animate *::after {
   height: 36px;
   border: 1px solid color-mix(in srgb, var(--color-accent) 55%, transparent);
   border-radius: 50%;
-  transition: transform 0.2s ease, border-color 0.2s ease, width 0.2s ease, height 0.2s ease;
+  transform: translate(-50%, -50%);
+  transition: border-color 0.2s ease, width 0.2s ease, height 0.2s ease;
 }
 
 .fx-cursor-ring--hover {

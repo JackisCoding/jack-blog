@@ -12,8 +12,6 @@ var Fx = (function () {
 
   var mx = 0;
   var my = 0;
-  var rcx = 0;
-  var rcy = 0;
   var glowX = 0;
   var glowY = 0;
   var rafId = 0;
@@ -70,14 +68,23 @@ var Fx = (function () {
         my = e.clientY;
         glowX = e.clientX;
         glowY = e.clientY;
-        if (!rcx && !rcy) {
-          rcx = mx;
-          rcy = my;
-        }
+        updateCursorPosition();
       },
       { passive: true }
     );
   }
+
+  function updateCursorPosition() {
+    if (!cursorDot || !cursorRing) return;
+    var scale = hovering ? 1.6 : 1;
+    cursorDot.style.left = mx + "px";
+    cursorDot.style.top = my + "px";
+    cursorRing.style.left = mx + "px";
+    cursorRing.style.top = my + "px";
+    cursorRing.style.transform =
+      "translate(-50%, -50%) scale(" + scale + ")";
+    cursorDot.style.transform =
+      "translate(-50%, -50%)" + (hovering ? " scale(1.35)" : "");
 
   /* ===== 2. 个性化光标 ===== */
   function initCursor() {
@@ -112,6 +119,7 @@ var Fx = (function () {
       hovering = true;
       cursorRing.classList.add("fx-cursor-ring--hover");
       cursorDot.classList.add("fx-cursor-dot--hover");
+      updateCursorPosition();
     }
   }
 
@@ -120,6 +128,7 @@ var Fx = (function () {
       hovering = false;
       cursorRing.classList.remove("fx-cursor-ring--hover");
       cursorDot.classList.remove("fx-cursor-dot--hover");
+      updateCursorPosition();
     }
   }
 
@@ -144,20 +153,6 @@ var Fx = (function () {
   }
 
   function tick() {
-    /* 圆点即时跟随；外环保留轻微平滑 */
-    rcx += (mx - rcx) * 0.55;
-    rcy += (my - rcy) * 0.55;
-
-    if (cursorDot && cursorRing) {
-      cursorDot.style.transform =
-        "translate(" + mx + "px, " + my + "px) translate(-50%, -50%)";
-      var scale = hovering ? 1.6 : 1;
-      cursorRing.style.transform =
-        "translate(" + rcx + "px, " + rcy + "px) translate(-50%, -50%) scale(" +
-        scale +
-        ")";
-    }
-
     if (glowEl && !touch) {
       var gx = glowEl._gx || glowX;
       var gy = glowEl._gy || glowY;
