@@ -26,6 +26,7 @@ var Fx = (function () {
 
     document.documentElement.classList.add("fx-enhanced");
     initGridAndGlow();
+    initBackgroundDecor();
     initGlitchText();
     initScrollReveal();
     initParallax();
@@ -69,10 +70,18 @@ var Fx = (function () {
         my = e.clientY;
         glowX = e.clientX;
         glowY = e.clientY;
+        revealCursor();
         updateCursorPosition();
       },
       { passive: true }
     );
+  }
+
+  function revealCursor() {
+    if (cursorReady || !cursorDot || !cursorRing) return;
+    cursorReady = true;
+    cursorDot.classList.add("fx-cursor-visible");
+    cursorRing.classList.add("fx-cursor-visible");
   }
 
   function updateCursorPosition() {
@@ -86,6 +95,140 @@ var Fx = (function () {
       "translate(-50%, -50%) scale(" + scale + ")";
     cursorDot.style.transform =
       "translate(-50%, -50%)" + (hovering ? " scale(1.35)" : "");
+  }
+
+  /* ===== 背景装饰：极光 / 粒子 / 扫描线 / 几何体 ===== */
+  function initBackgroundDecor() {
+    var wrap = document.createElement("div");
+    wrap.className = "fx-bg-decor";
+    wrap.setAttribute("aria-hidden", "true");
+    wrap.innerHTML =
+      '<div class="fx-aurora">' +
+      '<div class="fx-aurora__blob fx-aurora__blob--1"></div>' +
+      '<div class="fx-aurora__blob fx-aurora__blob--2"></div>' +
+      '<div class="fx-aurora__blob fx-aurora__blob--3"></div>' +
+      "</div>" +
+      '<div class="fx-scanline"></div>' +
+      '<div class="fx-shapes">' +
+      '<span class="fx-shape fx-shape--ring"></span>' +
+      '<span class="fx-shape fx-shape--hex"></span>' +
+      '<span class="fx-shape fx-shape--cross"></span>' +
+      '<span class="fx-shape fx-shape--dot"></span>' +
+      '<span class="fx-shape fx-shape--tri"></span>' +
+      "</div>";
+
+    document.body.prepend(wrap);
+    initParticleField();
+  }
+
+  function getAccentRgb() {
+    var dark = document.documentElement.getAttribute("data-theme") === "dark";
+    return dark ? "220, 66, 71" : "190, 59, 64";
+  }
+
+  function initParticleField() {
+    var canvas = document.createElement("canvas");
+    canvas.className = "fx-particles";
+    canvas.setAttribute("aria-hidden", "true");
+    document.body.prepend(canvas);
+
+    var ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    var particles = [];
+    var count = desktop ? 52 : 28;
+    var linkDist = desktop ? 140 : 110;
+    var running = true;
+    var w = 0;
+    var h = 0;
+
+    function resize() {
+      w = window.innerWidth;
+      h = window.innerHeight;
+      canvas.width = w;
+      canvas.height = h;
+    }
+
+    function seed() {
+      particles = [];
+      for (var i = 0; i < count; i++) {
+        particles.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          vx: (Math.random() - 0.5) * 0.55,
+          vy: (Math.random() - 0.5) * 0.55,
+          r: Math.random() * 1.8 + 0.8,
+          pulse: Math.random() * Math.PI * 2,
+        });
+      }
+    }
+
+    function step() {
+      if (!running) return;
+      ctx.clearRect(0, 0, w, h);
+      var rgb = getAccentRgb();
+
+      particles.forEach(function (p) {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.pulse += 0.02;
+
+        if (p.x <= 0 || p.x >= w) p.vx *= -1;
+        if (p.y <= 0 || p.y >= h) p.vy *= -1;
+
+        if (!touch && cursorReady) {
+          var dx = p.x - mx;
+          var dy = p.y - my;
+          var dist = Math.sqrt(dx * dx + dy * dy) || 1;
+          if (dist < 160) {
+            var force = (160 - dist) / 160 * 0.35;
+            p.x += (dx / dist) * force;
+            p.y += (dy / dist) * force;
+          }
+        }
+      });
+
+      for (var i = 0; i < particles.length; i++) {
+        for (var j = i + 1; j < particles.length; j++) {
+          var a = particles[i];
+          var b = particles[j];
+          var dx = a.x - b.x;
+          var dy = a.y - b.y;
+          var d = Math.sqrt(dx * dx + dy * dy);
+          if (d < linkDist) {
+            ctx.strokeStyle = "rgba(" + rgb + ", " + (1 - d / linkDist) * 0.22 + ")";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      particles.forEach(function (p) {
+        var glow = 0.45 + Math.sin(p.pulse) * 0.25;
+        ctx.fillStyle = "rgba(" + rgb + ", " + glow + ")";
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      requestAnimationFrame(step);
+    }
+
+    resize();
+    seed();
+    step();
+    window.addEventListener("resize", function () {
+      resize();
+      seed();
+    });
+
+    document.addEventListener("visibilitychange", function () {
+      running = !document.hidden;
+      if (running) step();
+    });
   }
 
   /* ===== 2. 个性化光标 ===== */
@@ -117,6 +260,12 @@ var Fx = (function () {
   }
 
   function onPointerOver(e) {
+    if (typeof e.clientX === "number" && typeof e.clientY === "number") {
+      mx = e.clientX;
+      my = e.clientY;
+      revealCursor();
+      updateCursorPosition();
+    }
     if (isInteractive(e.target)) {
       hovering = true;
       cursorRing.classList.add("fx-cursor-ring--hover");

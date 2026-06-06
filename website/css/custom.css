@@ -537,8 +537,227 @@ html.theme-animate *::after {
     linear-gradient(var(--fx-grid-color) 1px, transparent 1px),
     linear-gradient(90deg, var(--fx-grid-color) 1px, transparent 1px);
   background-size: 44px 44px;
+  animation: fxGridDrift 24s linear infinite;
   mask-image: radial-gradient(ellipse 85% 75% at 50% 40%, black 15%, transparent 72%);
   -webkit-mask-image: radial-gradient(ellipse 85% 75% at 50% 40%, black 15%, transparent 72%);
+}
+
+@keyframes fxGridDrift {
+  from { background-position: 0 0, 0 0; }
+  to { background-position: 44px 44px, 44px 44px; }
+}
+
+/* --- 背景装饰层 --- */
+.fx-bg-decor,
+.fx-particles {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.fx-particles {
+  opacity: 0.85;
+}
+
+.fx-bg-decor {
+  z-index: 0;
+}
+
+.fx-aurora {
+  position: absolute;
+  inset: -20%;
+  filter: blur(60px);
+  opacity: 0.55;
+}
+
+[data-theme="light"] .fx-aurora {
+  opacity: 0.38;
+}
+
+.fx-aurora__blob {
+  position: absolute;
+  border-radius: 50%;
+  mix-blend-mode: screen;
+}
+
+.fx-aurora__blob--1 {
+  width: 55vw;
+  height: 55vw;
+  top: -10%;
+  left: -8%;
+  background: radial-gradient(circle, rgba(190, 59, 64, 0.45) 0%, transparent 70%);
+  animation: fxAurora1 18s ease-in-out infinite alternate;
+}
+
+.fx-aurora__blob--2 {
+  width: 45vw;
+  height: 45vw;
+  bottom: -5%;
+  right: -10%;
+  background: radial-gradient(circle, rgba(120, 80, 200, 0.35) 0%, transparent 72%);
+  animation: fxAurora2 22s ease-in-out infinite alternate;
+}
+
+.fx-aurora__blob--3 {
+  width: 38vw;
+  height: 38vw;
+  top: 35%;
+  left: 40%;
+  background: radial-gradient(circle, rgba(0, 200, 180, 0.22) 0%, transparent 70%);
+  animation: fxAurora3 26s ease-in-out infinite alternate;
+}
+
+@keyframes fxAurora1 {
+  from { transform: translate(0, 0) scale(1); }
+  to { transform: translate(8vw, 6vh) scale(1.15); }
+}
+
+@keyframes fxAurora2 {
+  from { transform: translate(0, 0) rotate(0deg); }
+  to { transform: translate(-6vw, -8vh) rotate(25deg); }
+}
+
+@keyframes fxAurora3 {
+  from { transform: translate(0, 0) scale(1); }
+  to { transform: translate(-5vw, 4vh) scale(1.2); }
+}
+
+.fx-scanline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(190, 59, 64, 0.15),
+    rgba(255, 255, 255, 0.35),
+    rgba(190, 59, 64, 0.15),
+    transparent
+  );
+  box-shadow: 0 0 18px rgba(190, 59, 64, 0.35);
+  animation: fxScanDown 7s linear infinite;
+  opacity: 0.65;
+}
+
+@keyframes fxScanDown {
+  from { top: -5%; }
+  to { top: 105%; }
+}
+
+.fx-shapes {
+  position: absolute;
+  inset: 0;
+}
+
+.fx-shape {
+  position: absolute;
+  pointer-events: none;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 35%, transparent);
+  opacity: 0.45;
+}
+
+.fx-shape--ring {
+  width: 120px;
+  height: 120px;
+  top: 12%;
+  right: 8%;
+  border-radius: 50%;
+  animation: fxFloatA 14s ease-in-out infinite;
+}
+
+.fx-shape--hex {
+  width: 72px;
+  height: 72px;
+  bottom: 18%;
+  left: 6%;
+  clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+  animation: fxFloatB 18s ease-in-out infinite reverse;
+}
+
+.fx-shape--cross {
+  width: 48px;
+  height: 48px;
+  top: 42%;
+  left: 12%;
+  border: none;
+  opacity: 0.35;
+  animation: fxFloatC 20s ease-in-out infinite;
+}
+
+.fx-shape--cross::before,
+.fx-shape--cross::after {
+  content: "";
+  position: absolute;
+  background: color-mix(in srgb, var(--color-accent) 50%, transparent);
+}
+
+.fx-shape--cross::before {
+  width: 100%;
+  height: 1px;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+}
+
+.fx-shape--cross::after {
+  width: 1px;
+  height: 100%;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+}
+
+.fx-shape--dot {
+  width: 8px;
+  height: 8px;
+  top: 22%;
+  left: 28%;
+  border-radius: 50%;
+  background: var(--color-accent);
+  box-shadow: 0 0 12px var(--color-accent);
+  border: none;
+  animation: fxPulseDot 2.4s ease-in-out infinite;
+}
+
+.fx-shape--tri {
+  width: 0;
+  height: 0;
+  bottom: 28%;
+  right: 22%;
+  border: none;
+  border-left: 28px solid transparent;
+  border-right: 28px solid transparent;
+  border-bottom: 48px solid color-mix(in srgb, var(--color-accent) 25%, transparent);
+  animation: fxFloatA 16s ease-in-out infinite reverse, fxSpin 50s linear infinite reverse;
+}
+
+@keyframes fxFloatA {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-12px, 18px); }
+}
+
+@keyframes fxFloatB {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(16px, -14px) rotate(12deg); }
+}
+
+@keyframes fxFloatC {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(10px, 8px); }
+  66% { transform: translate(-8px, 14px); }
+}
+
+@keyframes fxSpin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fxPulseDot {
+  0%, 100% { transform: scale(1); opacity: 0.45; }
+  50% { transform: scale(1.8); opacity: 0.9; }
 }
 
 .fx-glow {
@@ -821,6 +1040,7 @@ html.theme-animate *::after {
   cursor: grabbing !important;
 }
 
+@media (max-width: 767px) {
   .fx-physics {
     display: none;
   }
@@ -829,13 +1049,29 @@ html.theme-animate *::after {
     opacity: 0.55;
     background-size: 32px 32px;
   }
+
+  .fx-shapes .fx-shape--ring,
+  .fx-shapes .fx-shape--hex {
+    display: none;
+  }
+
+  .fx-aurora {
+    filter: blur(40px);
+    opacity: 0.35;
+  }
+
+  .fx-particles {
+    opacity: 0.55;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .fx-grid,
   .fx-glow,
   .fx-physics,
-  .fx-code-rain {
+  .fx-code-rain,
+  .fx-bg-decor,
+  .fx-particles {
     display: none !important;
   }
 }
