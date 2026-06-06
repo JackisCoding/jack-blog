@@ -3,3 +3,4 @@ cmake-build-debug/
 *.iml
 .DS_Store
 *.log
+*.zip
