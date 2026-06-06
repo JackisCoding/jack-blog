@@ -85,6 +85,7 @@ var Fx = (function () {
       "translate(-50%, -50%) scale(" + scale + ")";
     cursorDot.style.transform =
       "translate(-50%, -50%)" + (hovering ? " scale(1.35)" : "");
+  }
 
   /* ===== 2. 个性化光标 ===== */
   function initCursor() {
