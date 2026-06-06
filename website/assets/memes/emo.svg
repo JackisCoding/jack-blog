@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="emo">
+  <rect width="120" height="120" rx="12" fill="#1b5e20"/>
+  <ellipse cx="60" cy="62" rx="32" ry="28" fill="#66bb6a"/>
+  <ellipse cx="60" cy="48" rx="26" ry="22" fill="#66bb6a"/>
+  <circle cx="48" cy="46" r="6" fill="#fff"/>
+  <circle cx="72" cy="46" r="6" fill="#fff"/>
+  <circle cx="48" cy="47" r="3" fill="#333"/>
+  <circle cx="72" cy="47" r="3" fill="#333"/>
+  <path d="M44 58 Q48 54 52 58" stroke="#2e7d32" stroke-width="2" fill="none"/>
+  <path d="M68 58 Q72 54 76 58" stroke="#2e7d32" stroke-width="2" fill="none"/>
+  <path d="M48 68 Q60 62 72 68" stroke="#1b5e20" stroke-width="2" fill="none"/>
+  <text x="60" y="104" text-anchor="middle" fill="#a5d6a7" font-size="12" font-family="sans-serif"> emo †</text>
+</svg>

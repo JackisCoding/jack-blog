@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="coffee">
+  <rect width="120" height="120" rx="12" fill="#3e2723"/>
+  <rect x="38" y="42" width="44" height="40" rx="6" fill="#795548"/>
+  <rect x="42" y="36" width="36" height="10" rx="3" fill="#5d4037"/>
+  <path d="M82 50 Q96 50 96 62 Q96 74 82 74" stroke="#795548" stroke-width="6" fill="none"/>
+  <path d="M48 52 Q52 46 56 52" stroke="#fff" stroke-width="2" fill="none" opacity=".6"/>
+  <text x="60" y="100" text-anchor="middle" fill="#ffcc80" font-size="10" font-family="sans-serif">„Í†</text>
+</svg>

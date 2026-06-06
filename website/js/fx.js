@@ -125,34 +125,54 @@ var Fx = (function () {
   /* 各页背景热梗 meme 小图 */
   var MEME_LAYOUTS = {
     index: [
-      { src: "assets/memes/doge.jpg", left: "4%", top: "16%", size: 72, rotate: -14, float: "a", delay: 0 },
-      { src: "assets/memes/stonks.svg", left: "86%", top: "10%", size: 64, rotate: 10, float: "b", delay: 1.1 },
-      { src: "assets/memes/hachimi.svg", left: "80%", top: "58%", size: 58, rotate: 6, float: "c", delay: 0.5 },
-      { src: "assets/memes/brainrot.svg", left: "3%", top: "65%", size: 56, rotate: -8, float: "b", delay: 1.8 },
+      { src: "assets/memes/doge.jpg", left: "3%", top: "12%", size: 72, rotate: -14, float: "a", delay: 0 },
+      { src: "assets/memes/stonks.svg", left: "88%", top: "8%", size: 64, rotate: 10, float: "b", delay: 1.1 },
+      { src: "assets/memes/hachimi.svg", left: "82%", top: "52%", size: 58, rotate: 6, float: "c", delay: 0.5 },
+      { src: "assets/memes/brainrot.svg", left: "2%", top: "58%", size: 56, rotate: -8, float: "b", delay: 1.8 },
+      { src: "assets/memes/yyds.svg", left: "72%", top: "78%", size: 54, rotate: -5, float: "a", delay: 2.3 },
+      { src: "assets/memes/nanbeng.svg", left: "8%", top: "78%", size: 52, rotate: 12, float: "c", delay: 0.9 },
+      { src: "assets/memes/dian.svg", left: "45%", top: "6%", size: 50, rotate: -6, float: "b", delay: 1.5 },
+      { src: "assets/memes/coffee.svg", left: "38%", top: "82%", size: 48, rotate: 8, float: "a", delay: 2.6 },
     ],
     about: [
-      { src: "assets/memes/harold.svg", left: "6%", top: "22%", size: 66, rotate: -6, float: "c", delay: 0.3 },
-      { src: "assets/memes/city.svg", left: "84%", top: "14%", size: 62, rotate: 12, float: "a", delay: 0.9 },
-      { src: "assets/memes/zundujiadu.svg", left: "78%", top: "68%", size: 60, rotate: -10, float: "b", delay: 1.5 },
-      { src: "assets/memes/this-is-fine.svg", left: "5%", top: "72%", size: 54, rotate: 8, float: "a", delay: 2.1 },
+      { src: "assets/memes/harold.svg", left: "4%", top: "18%", size: 66, rotate: -6, float: "c", delay: 0.3 },
+      { src: "assets/memes/city.svg", left: "86%", top: "10%", size: 62, rotate: 12, float: "a", delay: 0.9 },
+      { src: "assets/memes/zundujiadu.svg", left: "80%", top: "62%", size: 60, rotate: -10, float: "b", delay: 1.5 },
+      { src: "assets/memes/this-is-fine.svg", left: "3%", top: "68%", size: 54, rotate: 8, float: "a", delay: 2.1 },
+      { src: "assets/memes/emo.svg", left: "68%", top: "82%", size: 52, rotate: -4, float: "c", delay: 1.2 },
+      { src: "assets/memes/hachimi.svg", left: "42%", top: "8%", size: 50, rotate: 5, float: "b", delay: 2.4 },
+      { src: "assets/memes/mouse.svg", left: "18%", top: "42%", size: 48, rotate: -11, float: "a", delay: 0.7 },
+      { src: "assets/memes/dian.svg", left: "52%", top: "75%", size: 46, rotate: 7, float: "c", delay: 1.8 },
     ],
     articles: [
-      { src: "assets/memes/cat-table.svg", left: "5%", top: "18%", size: 68, rotate: -11, float: "b", delay: 0.2 },
-      { src: "assets/memes/mouse.svg", left: "87%", top: "12%", size: 62, rotate: 9, float: "c", delay: 1 },
-      { src: "assets/memes/distracted.svg", left: "82%", top: "62%", size: 58, rotate: -7, float: "a", delay: 1.6 },
-      { src: "assets/memes/hachimi.svg", left: "4%", top: "70%", size: 56, rotate: 5, float: "b", delay: 0.7 },
+      { src: "assets/memes/cat-table.svg", left: "3%", top: "14%", size: 68, rotate: -11, float: "b", delay: 0.2 },
+      { src: "assets/memes/mouse.svg", left: "88%", top: "10%", size: 62, rotate: 9, float: "c", delay: 1 },
+      { src: "assets/memes/distracted.svg", left: "84%", top: "58%", size: 58, rotate: -7, float: "a", delay: 1.6 },
+      { src: "assets/memes/hachimi.svg", left: "2%", top: "65%", size: 56, rotate: 5, float: "b", delay: 0.7 },
+      { src: "assets/memes/stonks.svg", left: "70%", top: "80%", size: 52, rotate: 10, float: "c", delay: 2.2 },
+      { src: "assets/memes/nanbeng.svg", left: "12%", top: "38%", size: 50, rotate: -8, float: "a", delay: 1.3 },
+      { src: "assets/memes/yyds.svg", left: "44%", top: "6%", size: 48, rotate: 6, float: "b", delay: 2.5 },
+      { src: "assets/memes/coffee.svg", left: "40%", top: "78%", size: 46, rotate: -5, float: "c", delay: 0.5 },
     ],
     contact: [
-      { src: "assets/memes/this-is-fine.svg", left: "7%", top: "20%", size: 64, rotate: -9, float: "a", delay: 0.4 },
-      { src: "assets/memes/doge.jpg", left: "85%", top: "16%", size: 68, rotate: 11, float: "c", delay: 1.2 },
-      { src: "assets/memes/harold.svg", left: "80%", top: "66%", size: 58, rotate: -5, float: "b", delay: 0.8 },
-      { src: "assets/memes/city.svg", left: "4%", top: "68%", size: 60, rotate: 7, float: "a", delay: 1.9 },
+      { src: "assets/memes/this-is-fine.svg", left: "5%", top: "16%", size: 64, rotate: -9, float: "a", delay: 0.4 },
+      { src: "assets/memes/doge.jpg", left: "86%", top: "12%", size: 68, rotate: 11, float: "c", delay: 1.2 },
+      { src: "assets/memes/harold.svg", left: "82%", top: "62%", size: 58, rotate: -5, float: "b", delay: 0.8 },
+      { src: "assets/memes/city.svg", left: "3%", top: "65%", size: 60, rotate: 7, float: "a", delay: 1.9 },
+      { src: "assets/memes/brainrot.svg", left: "68%", top: "78%", size: 52, rotate: -6, float: "c", delay: 2.1 },
+      { src: "assets/memes/zundujiadu.svg", left: "38%", top: "8%", size: 50, rotate: 8, float: "b", delay: 1.6 },
+      { src: "assets/memes/emo.svg", left: "22%", top: "40%", size: 48, rotate: -10, float: "a", delay: 0.3 },
+      { src: "assets/memes/dian.svg", left: "48%", top: "76%", size: 46, rotate: 4, float: "c", delay: 2.4 },
     ],
     article: [
-      { src: "assets/memes/mouse.svg", left: "6%", top: "24%", size: 60, rotate: -8, float: "c", delay: 0.6 },
-      { src: "assets/memes/stonks.svg", left: "88%", top: "18%", size: 58, rotate: 10, float: "a", delay: 1.3 },
-      { src: "assets/memes/zundujiadu.svg", left: "84%", top: "70%", size: 54, rotate: -6, float: "b", delay: 0.2 },
-      { src: "assets/memes/brainrot.svg", left: "5%", top: "74%", size: 52, rotate: 4, float: "c", delay: 1.7 },
+      { src: "assets/memes/mouse.svg", left: "4%", top: "20%", size: 60, rotate: -8, float: "c", delay: 0.6 },
+      { src: "assets/memes/stonks.svg", left: "89%", top: "14%", size: 58, rotate: 10, float: "a", delay: 1.3 },
+      { src: "assets/memes/zundujiadu.svg", left: "85%", top: "66%", size: 54, rotate: -6, float: "b", delay: 0.2 },
+      { src: "assets/memes/brainrot.svg", left: "3%", top: "70%", size: 52, rotate: 4, float: "c", delay: 1.7 },
+      { src: "assets/memes/nanbeng.svg", left: "72%", top: "82%", size: 50, rotate: -7, float: "a", delay: 2.3 },
+      { src: "assets/memes/hachimi.svg", left: "40%", top: "6%", size: 48, rotate: 5, float: "b", delay: 1.1 },
+      { src: "assets/memes/coffee.svg", left: "16%", top: "44%", size: 46, rotate: 9, float: "c", delay: 2.6 },
+      { src: "assets/memes/yyds.svg", left: "46%", top: "80%", size: 44, rotate: -4, float: "a", delay: 0.9 },
     ],
   };
 
@@ -169,7 +189,7 @@ var Fx = (function () {
     var mobile = window.matchMedia("(max-width: 767px)").matches;
     var pageKey = getMemePageKey();
     var layout = MEME_LAYOUTS[pageKey] || MEME_LAYOUTS.index;
-    var items = mobile ? layout.slice(0, 2) : layout;
+    var items = mobile ? layout.slice(0, 4) : layout;
 
     var wrap = document.createElement("div");
     wrap.className = "fx-meme-bg";
