@@ -1,30 +1,86 @@
-# 部署指南 — 让手机通过公网访问
+# 部署指南 — Gitee Pages（国内推荐）
 
-## 当前部署方式：gh-pages 分支（推荐，最稳定）
+本网站是纯静态页面。部署到 **Gitee Pages** 后，国内手机/电脑可直接访问，**无需翻墙**。
 
-推送代码后，GitHub Actions 会自动把 `website/` 文件夹部署到 `gh-pages` 分支。
+## 访问地址
 
-### 一次性设置（在 GitHub 网页操作）
+部署成功后：
 
-1. 打开：https://github.com/JackisCoding/jack-blog/settings/pages
-2. **Build and deployment** → **Source** 选择 **Deploy from a branch**
-3. **Branch** 选 **gh-pages**，文件夹选 **/ (root)**
-4. 点击 **Save**
+```
+https://你的Gitee用户名.gitee.io/jack-blog/
+```
 
-> 注意：不要选 GitHub Actions，也不要点 Jekyll / Static HTML 的 Configure。
+例如：`https://jackiscoding.gitee.io/jack-blog/`
 
-### 推送代码
+---
+
+## 第一次部署
+
+### 1. 注册并实名认证 Gitee
+
+1. 打开 [gitee.com](https://gitee.com) 注册账号
+2. 完成**实名认证**（免费 Pages 必须实名）
+
+### 2. 创建仓库
+
+1. 点击右上角 **+** → **新建仓库**
+2. 仓库名：`jack-blog`
+3. 选 **公开**
+4. **不要**勾选「使用 Readme 初始化」
+5. 创建
+
+### 3. 推送代码
+
+在项目根目录执行：
 
 ```bash
 cd ~/CLionProjects/Jack
-git push origin main
+
+# 添加 Gitee 远程（只需一次，用户名改成你的）
+git remote add gitee https://gitee.com/你的用户名/jack-blog.git
+
+# 推送
+git push -u gitee main
 ```
 
-### 手机访问地址
+> 若提示输入密码，使用 Gitee 账号密码或**私人令牌**（设置 → 私人令牌）。
 
-部署成功后（约 1–2 分钟），用手机浏览器打开：
+也可使用脚本：
 
-**https://jackiscoding.github.io/jack-blog/**
+```bash
+chmod +x scripts/push-gitee.sh
+./scripts/push-gitee.sh
+```
+
+### 4. 开启 Gitee Pages
+
+1. 打开仓库 → **服务** → **Gitee Pages**
+2. 选择分支：**main**
+3. 部署目录：由 **`.gitee-ci.yml`** 自动处理（`website/` 内容）
+4. 点击 **启动** / **更新**
+
+等待 1–3 分钟，状态变为「部署成功」即可访问。
+
+### 5. 手机访问
+
+浏览器打开：`https://你的用户名.gitee.io/jack-blog/`
+
+---
+
+## 更新网站
+
+```bash
+cd ~/CLionProjects/Jack
+
+# 若新增了文章，先生成索引
+python3 website/scripts/generate-manifest.py
+
+git add .
+git commit -m "更新网站内容"
+git push gitee main
+```
+
+推送后到 **Gitee Pages** 页面点 **更新**，或等待 CI 自动部署。
 
 ---
 
@@ -35,12 +91,24 @@ cd website
 python3 -m http.server 8888
 ```
 
-访问 `http://localhost:8888`（不要用 file:// 打开 HTML）。
+浏览器访问 `http://localhost:8888`
 
 ---
 
-## 新增文章
+## 国内优化说明
 
-1. 在 `website/posts/` 添加 `.md` 文件
-2. 运行 `python3 website/scripts/generate-manifest.py`
-3. `git add . && git commit -m "新增文章" && git push`
+网站已做国内访问优化：
+
+- 字体使用系统字体（微软雅黑、PingFang 等），不依赖 Google Fonts
+- Tailwind、marked.js 已下载到本地 `js/vendor/`，不依赖境外 CDN
+
+---
+
+## GitHub Pages（可选）
+
+GitHub 部署仍保留在 `.github/workflows/deploy.yml`，可同时推送到两个平台：
+
+```bash
+git push origin main   # GitHub
+git push gitee main    # Gitee（国内推荐）
+```
