@@ -269,7 +269,7 @@ var Fx = (function () {
       var cell = getGridCell();
       var figureH = cell * 2.5;
       var arenaW = Math.ceil(cell * 5.2);
-      var arenaH = Math.ceil(cell * 2.8);
+      var arenaH = Math.ceil(cell * 3.5);
 
       canvas.width = Math.ceil(arenaW * dpr);
       canvas.height = Math.ceil(arenaH * dpr);
@@ -285,7 +285,7 @@ var Fx = (function () {
       var rgb = getAccentRgb();
       var rgbB = getAccentRgb();
 
-      var groundY = arenaH - cell * 0.25;
+      var groundY = arenaH - cell * 1.12;
       var ax = cell * 1.15;
       var bx = arenaW - cell * 1.15;
       var midX = arenaW * 0.5;
