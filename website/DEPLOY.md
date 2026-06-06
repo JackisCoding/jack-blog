@@ -14,19 +14,31 @@
 
 腾讯云 EdgeOne 提供的免费静态托管，适合个人博客。
 
+#### 方式 1：从 Gitee / GitHub 导入（自动更新）
+
+1. 打开 [EdgeOne Pages 控制台](https://console.cloud.tencent.com/edgeone/pages)
+2. 导入仓库 `jackiscoding/jack-blog`
+3. **构建部署配置**（关键）：
+
+| 配置项 | 填写值 |
+|--------|--------|
+| 框架预设 | **其他** 或 **None** |
+| 根目录 | `./`（默认，仓库根目录） |
+| 输出目录 | **`website`** |
+| 构建命令 | 留空，或填 `echo static` |
+| 安装命令 | 留空，或填 `echo skip` |
+
+4. **Git 管理** → 生产分支选 **`main`**
+5. 点击 **部署** / **重新部署**，等待构建成功
+6. 复制访问域名，手机浏览器打开
+
+仓库根目录已有 `edgeone.json`，推送后会自动覆盖上述构建设置。
+
+#### 方式 2：拖拽上传（无需 Git）
+
 1. 打开 [EdgeOne Pages](https://pages.edgeone.ai/)
-2. 注册 / 登录
-3. 选择 **Pages Drop** 或 **上传部署**
-4. 打包网站：
-
-```bash
-cd ~/CLionProjects/Jack
-chmod +x scripts/package-website.sh
-./scripts/package-website.sh
-```
-
-5. 将生成的 `jack-blog-site.zip` 或整个 `website/` 文件夹拖入上传
-6. 获得类似 `https://xxx.edgeone.app` 的访问链接，手机可直接打开
+2. 选择 **Pages Drop** 直接上传
+3. 打包：`./scripts/package-website.sh`，上传 `jack-blog-site.zip`
 
 ---
 
