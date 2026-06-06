@@ -8,7 +8,7 @@ POSTS_DIR = Path(__file__).resolve().parent.parent / "posts"
 MANIFEST = POSTS_DIR / "manifest.json"
 
 files = sorted(
-    f.name for f in POSTS_DIR.glob("*.md"),
+    (f.name for f in POSTS_DIR.glob("*.md")),
     key=lambda name: (POSTS_DIR / name).stat().st_mtime,
     reverse=True,
 )

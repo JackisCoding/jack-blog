@@ -63,8 +63,6 @@
     });
 
     var tags = Object.keys(tagCounts).sort(function (a, b) {
-      if (a === "个人日记") return -1;
-      if (b === "个人日记") return 1;
       return tagCounts[b] - tagCounts[a];
     });
 
