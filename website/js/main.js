@@ -22,6 +22,7 @@
       mobileMenu.classList.toggle("hidden-menu", isOpen);
       mobileMenu.classList.toggle("open-menu", !isOpen);
       menuBtn.setAttribute("aria-expanded", String(!isOpen));
+      syncHeaderOffset();
     });
 
     mobileMenu.querySelectorAll("a").forEach(function (link) {
@@ -38,6 +39,19 @@
     yearEl.textContent = new Date().getFullYear();
   }
 
+  syncHeaderOffset();
+  window.addEventListener("resize", syncHeaderOffset);
+  window.addEventListener("orientationchange", syncHeaderOffset);
+
   Theme.init();
   Search.init();
+
+  function syncHeaderOffset() {
+    var header = document.querySelector(".site-header");
+    if (!header) return;
+    document.documentElement.style.setProperty(
+      "--site-header-h",
+      header.offsetHeight + "px"
+    );
+  }
 })();
