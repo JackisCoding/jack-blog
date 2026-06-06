@@ -1053,61 +1053,6 @@ html.theme-animate *::after {
   mix-blend-mode: soft-light;
 }
 
-/* --- 物理彩蛋 --- */
-.fx-physics {
-  position: fixed;
-  right: 1rem;
-  bottom: 1rem;
-  z-index: 6;
-  width: 300px;
-  height: 200px;
-  border-radius: 1rem;
-  border: 1px solid color-mix(in srgb, var(--color-accent) 35%, var(--color-border));
-  background: color-mix(in srgb, var(--color-card) 88%, transparent);
-  backdrop-filter: blur(8px);
-  box-shadow: var(--shadow-card);
-  overflow: hidden;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  touch-action: none;
-}
-
-.fx-physics:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-card-hover);
-}
-
-.fx-physics canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-  cursor: grab;
-}
-
-.fx-physics canvas:active {
-  cursor: grabbing;
-}
-
-.fx-physics__hint {
-  position: absolute;
-  top: 0.45rem;
-  left: 0.65rem;
-  z-index: 1;
-  font-size: 0.625rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--color-muted);
-  pointer-events: none;
-  opacity: 0.85;
-}
-
-.fx-cursor-active .fx-physics canvas {
-  cursor: grab !important;
-}
-
-.fx-cursor-active .fx-physics canvas:active {
-  cursor: grabbing !important;
-}
-
 @media (max-width: 767px) {
   .site-header {
     position: fixed !important;
@@ -1122,15 +1067,6 @@ html.theme-animate *::after {
   body {
     padding-top: var(--site-header-h, 7.5rem);
     padding-bottom: env(safe-area-inset-bottom, 0px);
-  }
-
-  .fx-physics {
-    display: block;
-    left: calc(0.5rem + env(safe-area-inset-left, 0px));
-    right: auto;
-    bottom: calc(2.5rem + env(safe-area-inset-bottom, 0px));
-    width: min(220px, 42vw);
-    height: 148px;
   }
 
   .fx-grid {
@@ -1228,7 +1164,6 @@ html.theme-animate *::after {
 @media (prefers-reduced-motion: reduce) {
   .fx-grid,
   .fx-glow,
-  .fx-physics,
   .fx-code-rain,
   .fx-bg-decor,
   .fx-particles,

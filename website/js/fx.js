@@ -1,5 +1,5 @@
 /**
- * 全站科技感动效：光标、网格光晕、代码雨、故障字、滚动视差、物理彩蛋
+ * 全站科技感动效：光标、网格光晕、代码雨、故障字、滚动视差
  * 尊重 prefers-reduced-motion；触控设备自动降级
  */
 var Fx = (function () {
@@ -34,7 +34,6 @@ var Fx = (function () {
     if (desktop && !touch) {
       initCursor();
     }
-    initPhysics();
 
     if (document.querySelector(".hero-banner")) {
       initCodeRain();
@@ -349,7 +348,7 @@ var Fx = (function () {
     if (!el || el === document.body) return false;
     return Boolean(
       el.closest(
-        "a, button, input, textarea, select, label, .btn-primary, .btn-outline-light, .theme-toggle, .tag-filter, .social-link, .article-card, .fx-physics"
+        "a, button, input, textarea, select, label, .btn-primary, .btn-outline-light, .theme-toggle, .tag-filter, .social-link, .article-card"
       )
     );
   }
@@ -597,244 +596,6 @@ var Fx = (function () {
       { threshold: 0 }
     );
     io.observe(hero);
-  }
-
-  /* ===== 6. 重力拖拽彩蛋 ===== */
-  function initPhysics() {
-    var wrap = document.createElement("div");
-    wrap.className = "fx-physics";
-    wrap.setAttribute("title", "拖拽小球试试");
-
-    var label = document.createElement("span");
-    label.className = "fx-physics__hint";
-    label.textContent = touch ? "手指拖拽" : "拖拽 · 抛出";
-
-    var canvas = document.createElement("canvas");
-    wrap.appendChild(label);
-    wrap.appendChild(canvas);
-    document.body.appendChild(wrap);
-
-    var ctx = canvas.getContext("2d");
-    var W = 300;
-    var H = 200;
-
-    function layoutPhysics() {
-      var mobile = window.matchMedia("(max-width: 767px)").matches;
-      W = mobile ? 220 : 300;
-      H = mobile ? 148 : 200;
-      canvas.width = W;
-      canvas.height = H;
-    }
-
-    layoutPhysics();
-    window.addEventListener("resize", layoutPhysics);
-
-    var bodies = [];
-    var drag = null;
-    var lastX = 0;
-    var lastY = 0;
-    var history = [];
-
-    function rand(min, max) {
-      return min + Math.random() * (max - min);
-    }
-
-    function Body(x, y, r, shape) {
-      this.x = x;
-      this.y = y;
-      this.r = r;
-      this.shape = shape;
-      this.vx = rand(-1, 1);
-      this.vy = rand(-1, 1);
-      this.angle = rand(0, Math.PI * 2);
-      this.va = rand(-0.02, 0.02);
-      this.hue = shape === "hex" ? 0 : shape === "sq" ? 15 : 350;
-    }
-
-    bodies.push(new Body(60, 60, 18, "circle"));
-    bodies.push(new Body(140, 90, 16, "hex"));
-    bodies.push(new Body(220, 50, 14, "sq"));
-    bodies.push(new Body(180, 140, 15, "circle"));
-
-    function getPos(e) {
-      var rect = canvas.getBoundingClientRect();
-      var clientX = e.touches ? e.touches[0].clientX : e.clientX;
-      var clientY = e.touches ? e.touches[0].clientY : e.clientY;
-      return { x: clientX - rect.left, y: clientY - rect.top };
-    }
-
-    function hitTest(x, y) {
-      for (var i = bodies.length - 1; i >= 0; i--) {
-        var b = bodies[i];
-        var dx = x - b.x;
-        var dy = y - b.y;
-        if (dx * dx + dy * dy <= (b.r + 6) * (b.r + 6)) return b;
-      }
-      return null;
-    }
-
-    function onDown(e) {
-      e.preventDefault();
-      var p = getPos(e);
-      var b = hitTest(p.x, p.y);
-      if (!b) return;
-      drag = b;
-      lastX = p.x;
-      lastY = p.y;
-      history = [{ x: p.x, y: p.y, t: Date.now() }];
-      b.vx = 0;
-      b.vy = 0;
-    }
-
-    function onMove(e) {
-      if (!drag) return;
-      if (e.cancelable) e.preventDefault();
-      var p = getPos(e);
-      drag.x = p.x;
-      drag.y = p.y;
-      history.push({ x: p.x, y: p.y, t: Date.now() });
-      if (history.length > 6) history.shift();
-      lastX = p.x;
-      lastY = p.y;
-    }
-
-    function onUp() {
-      if (!drag) return;
-      var h = history;
-      if (h.length >= 2) {
-        var a = h[h.length - 2];
-        var b = h[h.length - 1];
-        var dt = Math.max(b.t - a.t, 1);
-        drag.vx = ((b.x - a.x) / dt) * 16;
-        drag.vy = ((b.y - a.y) / dt) * 16;
-      }
-      drag = null;
-      history = [];
-    }
-
-    canvas.addEventListener("mousedown", onDown);
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup", onUp);
-    canvas.addEventListener("touchstart", onDown, { passive: false });
-    window.addEventListener("touchmove", onMove, { passive: false });
-    window.addEventListener("touchend", onUp);
-    window.addEventListener("touchcancel", onUp);
-
-    function resolve(a, b) {
-      var dx = b.x - a.x;
-      var dy = b.y - a.y;
-      var dist = Math.sqrt(dx * dx + dy * dy) || 0.001;
-      var minDist = a.r + b.r;
-      if (dist >= minDist) return;
-
-      var nx = dx / dist;
-      var ny = dy / dist;
-      var overlap = minDist - dist;
-      a.x -= nx * overlap * 0.5;
-      a.y -= ny * overlap * 0.5;
-      b.x += nx * overlap * 0.5;
-      b.y += ny * overlap * 0.5;
-
-      var dvx = a.vx - b.vx;
-      var dvy = a.vy - b.vy;
-      var vn = dvx * nx + dvy * ny;
-      if (vn > 0) return;
-      var restitution = 0.82;
-      var impulse = (-(1 + restitution) * vn) / 2;
-      a.vx -= impulse * nx;
-      a.vy -= impulse * ny;
-      b.vx += impulse * nx;
-      b.vy += impulse * ny;
-    }
-
-    function drawBody(b) {
-      var accent =
-        getComputedStyle(document.documentElement).getPropertyValue("--color-accent").trim() ||
-        "#BE3B40";
-      ctx.save();
-      ctx.translate(b.x, b.y);
-      ctx.rotate(b.angle);
-      ctx.shadowColor = accent;
-      ctx.shadowBlur = 12;
-      ctx.fillStyle = accent;
-      ctx.globalAlpha = 0.85;
-
-      if (b.shape === "circle") {
-        ctx.beginPath();
-        ctx.arc(0, 0, b.r, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.strokeStyle = "rgba(255,255,255,0.35)";
-        ctx.lineWidth = 2;
-        ctx.stroke();
-      } else if (b.shape === "sq") {
-        ctx.fillRect(-b.r, -b.r, b.r * 2, b.r * 2);
-      } else {
-        ctx.beginPath();
-        for (var i = 0; i < 6; i++) {
-          var ang = (Math.PI / 3) * i;
-          var px = Math.cos(ang) * b.r;
-          var py = Math.sin(ang) * b.r;
-          if (i === 0) ctx.moveTo(px, py);
-          else ctx.lineTo(px, py);
-        }
-        ctx.closePath();
-        ctx.fill();
-      }
-      ctx.restore();
-    }
-
-    function step() {
-      ctx.clearRect(0, 0, W, H);
-
-      ctx.strokeStyle = "rgba(190,59,64,0.12)";
-      ctx.lineWidth = 1;
-      for (var g = 0; g < W; g += 30) {
-        ctx.beginPath();
-        ctx.moveTo(g, 0);
-        ctx.lineTo(g, H);
-        ctx.stroke();
-      }
-
-      bodies.forEach(function (b) {
-        if (b !== drag) {
-          b.vy += 0.18;
-          b.vx *= 0.995;
-          b.vy *= 0.995;
-          b.x += b.vx;
-          b.y += b.vy;
-          b.angle += b.va;
-
-          if (b.x - b.r < 0) {
-            b.x = b.r;
-            b.vx *= -0.75;
-          }
-          if (b.x + b.r > W) {
-            b.x = W - b.r;
-            b.vx *= -0.75;
-          }
-          if (b.y - b.r < 0) {
-            b.y = b.r;
-            b.vy *= -0.75;
-          }
-          if (b.y + b.r > H) {
-            b.y = H - b.r;
-            b.vy *= -0.68;
-            b.vx *= 0.92;
-          }
-        }
-      });
-
-      for (var i = 0; i < bodies.length; i++) {
-        for (var j = i + 1; j < bodies.length; j++) {
-          resolve(bodies[i], bodies[j]);
-        }
-      }
-
-      bodies.forEach(drawBody);
-      requestAnimationFrame(step);
-    }
-
-    step();
   }
 
   return { init: init, applyGlitch: applyGlitch };
