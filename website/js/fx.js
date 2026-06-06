@@ -33,8 +33,8 @@ var Fx = (function () {
 
     if (desktop && !touch) {
       initCursor();
-      initPhysics();
     }
+    initPhysics();
 
     if (document.querySelector(".hero-banner")) {
       initCodeRain();
@@ -718,7 +718,7 @@ var Fx = (function () {
 
     var label = document.createElement("span");
     label.className = "fx-physics__hint";
-    label.textContent = "拖拽 · 抛出";
+    label.textContent = touch ? "手指拖拽" : "拖拽 · 抛出";
 
     var canvas = document.createElement("canvas");
     wrap.appendChild(label);
@@ -728,8 +728,17 @@ var Fx = (function () {
     var ctx = canvas.getContext("2d");
     var W = 300;
     var H = 200;
-    canvas.width = W;
-    canvas.height = H;
+
+    function layoutPhysics() {
+      var mobile = window.matchMedia("(max-width: 767px)").matches;
+      W = mobile ? 220 : 300;
+      H = mobile ? 148 : 200;
+      canvas.width = W;
+      canvas.height = H;
+    }
+
+    layoutPhysics();
+    window.addEventListener("resize", layoutPhysics);
 
     var bodies = [];
     var drag = null;
@@ -816,6 +825,10 @@ var Fx = (function () {
     canvas.addEventListener("mousedown", onDown);
     window.addEventListener("mousemove", onMove);
     window.addEventListener("mouseup", onUp);
+    canvas.addEventListener("touchstart", onDown, { passive: false });
+    window.addEventListener("touchmove", onMove, { passive: false });
+    window.addEventListener("touchend", onUp);
+    window.addEventListener("touchcancel", onUp);
 
     function resolve(a, b) {
       var dx = b.x - a.x;
