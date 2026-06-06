@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="mouse">
+  <rect width="120" height="120" rx="12" fill="#37474f"/>
+  <ellipse cx="60" cy="62" rx="24" ry="20" fill="#b0bec5"/>
+  <circle cx="60" cy="42" r="18" fill="#b0bec5"/>
+  <ellipse cx="42" cy="28" rx="10" ry="14" fill="#cfd8dc"/>
+  <ellipse cx="78" cy="28" rx="10" ry="14" fill="#cfd8dc"/>
+  <circle cx="52" cy="40" r="3" fill="#333"/>
+  <circle cx="68" cy="40" r="3" fill="#333"/>
+  <circle cx="60" cy="48" r="2" fill="#78909c"/>
+  <path d="M52 55 Q60 50 68 55" stroke="#546e7a" stroke-width="1.5" fill="none"/>
+  <text x="60" y="100" text-anchor="middle" fill="#eceff1" font-size="11" font-family="sans-serif">  J</text>
+</svg>

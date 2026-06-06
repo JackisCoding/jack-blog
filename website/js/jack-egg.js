@@ -1,16 +1,19 @@
 /**
- * 标题栏「Jack」彩蛋：点击抖动 + RGB 分离；5s 内 10 次触发玻璃碎裂，碎片坠落堆叠
+ * 标题栏「Jack」彩蛋：点击抖动 + RGB 分离；5s 内 5 次触发玻璃碎裂，页面元素随碎片崩解坠落
  */
 (function () {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
   var CLICK_WINDOW_MS = 5000;
-  var CLICKS_TO_SHATTER = 10;
+  var CLICKS_TO_SHATTER = 5;
   var clickTimes = [];
   var shattering = false;
   var shardCanvas = null;
   var shardAnimId = 0;
   var shards = [];
+  var pageSnapshot = null;
+  var viewW = 0;
+  var viewH = 0;
 
   document.addEventListener("DOMContentLoaded", init);
 
@@ -69,14 +72,80 @@
     glassPane.setAttribute("aria-hidden", "true");
     document.body.appendChild(glassPane);
 
-    runCrackSequence(origin, glassPane, function () {
+    runCrackSequence(origin, function () {
       glassPane.remove();
-      startGlassFall(origin);
+      capturePageSnapshot(function (snapshot) {
+        pageSnapshot = snapshot;
+        document.body.classList.add("jack-egg-content-hidden");
+        startGlassFall(origin);
+      });
     });
   }
 
+  function shouldIgnoreCapture(node) {
+    if (!node || !node.classList) return false;
+    return (
+      node.classList.contains("jack-crack-overlay") ||
+      node.classList.contains("jack-glass-pane") ||
+      node.classList.contains("jack-glass-shards") ||
+      node.classList.contains("fx-cursor-dot") ||
+      node.classList.contains("fx-cursor-ring")
+    );
+  }
+
+  function capturePageSnapshot(callback) {
+    viewW = window.innerWidth;
+    viewH = window.innerHeight;
+    var scrollX = window.scrollX;
+    var scrollY = window.scrollY;
+
+    function runCapture() {
+      window
+        .html2canvas(document.body, {
+          backgroundColor: null,
+          scale: Math.min(window.devicePixelRatio || 1, 2),
+          width: viewW,
+          height: viewH,
+          x: scrollX,
+          y: scrollY,
+          scrollX: -scrollX,
+          scrollY: -scrollY,
+          windowWidth: viewW,
+          windowHeight: viewH,
+          useCORS: true,
+          allowTaint: true,
+          logging: false,
+          ignoreElements: shouldIgnoreCapture,
+          onclone: function (clonedDoc) {
+            clonedDoc.querySelectorAll(".jack-crack-overlay, .jack-glass-pane, .jack-glass-shards").forEach(function (el) {
+              el.remove();
+            });
+          },
+        })
+        .then(function (canvas) {
+          callback(canvas);
+        })
+        .catch(function () {
+          callback(null);
+        });
+    }
+
+    if (window.html2canvas) {
+      runCapture();
+      return;
+    }
+
+    var script = document.createElement("script");
+    script.src = "js/vendor/html2canvas.min.js";
+    script.onload = runCapture;
+    script.onerror = function () {
+      callback(null);
+    };
+    document.head.appendChild(script);
+  }
+
   /* ===== 玻璃裂痕：三步蔓延 ===== */
-  function runCrackSequence(origin, glassPane, onComplete) {
+  function runCrackSequence(origin, onComplete) {
     var overlay = document.createElement("div");
     overlay.className = "jack-crack-overlay";
     overlay.setAttribute("aria-hidden", "true");
@@ -201,7 +270,7 @@
     });
   }
 
-  /* ===== 玻璃碎片：生成、重力、堆叠 ===== */
+  /* ===== 玻璃碎片：页面快照绑定、重力、堆叠 ===== */
   function startGlassFall(origin) {
     if (shardCanvas) {
       shardCanvas.remove();
@@ -216,12 +285,14 @@
 
     var ctx = canvas.getContext("2d");
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    var w = window.innerWidth;
-    var h = window.innerHeight;
+    var w = viewW || window.innerWidth;
+    var h = viewH || window.innerHeight;
 
     function resize() {
       w = window.innerWidth;
       h = window.innerHeight;
+      viewW = w;
+      viewH = h;
       canvas.width = w * dpr;
       canvas.height = h * dpr;
       canvas.style.width = w + "px";
@@ -233,13 +304,17 @@
     shards = buildGlassShards(w, h, origin);
 
     var groundY = h - 6;
-    var GRAVITY = 0.55;
+    var GRAVITY = 0.58;
     var settledFrames = 0;
 
     function step() {
-      resize();
       groundY = h - 6;
       ctx.clearRect(0, 0, w, h);
+
+      if (!pageSnapshot) {
+        ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--color-bg").trim() || "#f5f0eb";
+        ctx.fillRect(0, 0, w, h);
+      }
 
       var active = 0;
 
@@ -265,7 +340,7 @@
       }
 
       for (var d = 0; d < shards.length; d++) {
-        drawGlassShard(ctx, shards[d]);
+        drawGlassShard(ctx, shards[d], w, h);
       }
 
       if (active === 0) {
@@ -284,20 +359,25 @@
 
     shardAnimId = requestAnimationFrame(step);
 
-    window.addEventListener("resize", resize);
+    window.addEventListener("resize", function onResize() {
+      resize();
+      groundY = h - 6;
+    });
   }
 
   function buildGlassShards(w, h, origin) {
     var list = [];
-    var cols = Math.max(10, Math.floor(w / 70));
-    var rows = Math.max(8, Math.floor(h / 70));
+    var mobile = window.matchMedia("(max-width: 767px)").matches;
+    var cell = mobile ? 68 : 54;
+    var cols = Math.max(mobile ? 9 : 12, Math.floor(w / cell));
+    var rows = Math.max(mobile ? 8 : 10, Math.floor(h / cell));
     var cw = w / cols;
     var ch = h / rows;
 
     function jitter(x, y) {
       return {
-        x: Math.max(0, Math.min(w, x + (Math.random() - 0.5) * cw * 0.42)),
-        y: Math.max(0, Math.min(h, y + (Math.random() - 0.5) * ch * 0.42)),
+        x: Math.max(0, Math.min(w, x + (Math.random() - 0.5) * cw * 0.48)),
+        y: Math.max(0, Math.min(h, y + (Math.random() - 0.5) * ch * 0.48)),
       };
     }
 
@@ -317,7 +397,7 @@
       var dx = cx - origin.x;
       var dy = cy - origin.y;
       var dist = Math.hypot(dx, dy) || 1;
-      var power = 1.2 + Math.min(5, dist * 0.012);
+      var power = 1.4 + Math.min(6, dist * 0.014);
       var nx = dx / dist;
       var ny = dy / dist;
 
@@ -325,10 +405,10 @@
         verts: verts,
         x: cx,
         y: cy,
-        vx: nx * power + (Math.random() - 0.5) * 1.8,
-        vy: ny * power * 0.6 - 1.5 - Math.random() * 1.2,
-        angle: (Math.random() - 0.5) * 0.4,
-        va: (Math.random() - 0.5) * 0.18,
+        vx: nx * power + (Math.random() - 0.5) * 2.2,
+        vy: ny * power * 0.55 - 2 - Math.random() * 1.5,
+        angle: (Math.random() - 0.5) * 0.35,
+        va: (Math.random() - 0.5) * 0.22,
         radius: radius + 2,
         mass: radius,
         resting: false,
@@ -455,34 +535,48 @@
     b.resting = false;
   }
 
-  function drawGlassShard(ctx, s) {
+  function drawGlassShard(ctx, s, w, h) {
     var dark = document.documentElement.getAttribute("data-theme") === "dark";
+    var wv = worldVerts(s);
 
     ctx.save();
-    ctx.translate(s.x, s.y);
-    ctx.rotate(s.angle);
     ctx.beginPath();
-    ctx.moveTo(s.verts[0].x, s.verts[0].y);
-    for (var i = 1; i < s.verts.length; i++) {
-      ctx.lineTo(s.verts[i].x, s.verts[i].y);
+    ctx.moveTo(wv[0].x, wv[0].y);
+    for (var i = 1; i < wv.length; i++) {
+      ctx.lineTo(wv[i].x, wv[i].y);
+    }
+    ctx.closePath();
+    ctx.clip();
+
+    if (pageSnapshot) {
+      ctx.drawImage(pageSnapshot, 0, 0, pageSnapshot.width, pageSnapshot.height, 0, 0, w, h);
+    } else {
+      var fill = dark
+        ? "rgba(255, 255, 255, " + (0.06 + s.tint * 0.08) + ")"
+        : "rgba(255, 255, 255, " + (0.18 + s.tint * 0.12) + ")";
+      ctx.fillStyle = fill;
+      ctx.fill();
+    }
+
+    ctx.fillStyle = dark ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.1)";
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.restore();
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(wv[0].x, wv[0].y);
+    for (var j = 1; j < wv.length; j++) {
+      ctx.lineTo(wv[j].x, wv[j].y);
     }
     ctx.closePath();
 
-    var fill = dark
-      ? "rgba(255, 255, 255, " + (0.06 + s.tint * 0.08) + ")"
-      : "rgba(255, 255, 255, " + (0.18 + s.tint * 0.12) + ")";
-    ctx.fillStyle = fill;
-    ctx.fill();
-
-    ctx.strokeStyle = dark ? "rgba(255,255,255,0.45)" : "rgba(255,255,255,0.75)";
-    ctx.lineWidth = 1.1;
+    ctx.strokeStyle = dark ? "rgba(255,255,255,0.55)" : "rgba(255,255,255,0.82)";
+    ctx.lineWidth = 1.15;
     ctx.stroke();
 
-    ctx.clip();
-    ctx.strokeStyle = "rgba(255,255,255,0.25)";
-    ctx.beginPath();
-    ctx.moveTo(s.verts[0].x * 0.3, s.verts[0].y * 0.3);
-    ctx.lineTo(s.verts[1].x * 0.2, s.verts[1].y * 0.2);
+    ctx.strokeStyle = "rgba(190, 59, 64, 0.22)";
+    ctx.lineWidth = 0.6;
     ctx.stroke();
 
     ctx.restore();

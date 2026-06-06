@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="brainrot">
+  <rect width="120" height="120" rx="12" fill="#311b92"/>
+  <rect x="35" y="35" width="50" height="55" rx="8" fill="#fff"/>
+  <ellipse cx="60" cy="52" rx="12" ry="14" fill="#eceff1"/>
+  <circle cx="55" cy="50" r="4" fill="#333"/>
+  <circle cx="65" cy="50" r="4" fill="#333"/>
+  <rect x="48" y="62" width="24" height="8" rx="2" fill="#333"/>
+  <rect x="30" y="78" width="60" height="8" rx="2" fill="#7c4dff"/>
+  <text x="60" y="108" text-anchor="middle" fill="#b388ff" font-size="10" font-family="sans-serif">Skibidi?</text>
+</svg>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="stonks">
+  <rect width="120" height="120" rx="12" fill="#1a1a2e"/>
+  <path d="M20 85 L45 60 L65 70 L95 25" stroke="#00c853" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <polygon points="95,25 88,38 102,38" fill="#00c853"/>
+  <rect x="38" y="52" width="28" height="38" rx="4" fill="#37474f"/>
+  <circle cx="52" cy="44" r="10" fill="#ffcc80"/>
+  <text x="60" y="108" text-anchor="middle" fill="#00c853" font-size="14" font-family="sans-serif" font-weight="bold">STONKS</text>
+</svg>

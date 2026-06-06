@@ -119,212 +119,81 @@ var Fx = (function () {
 
     document.body.prepend(wrap);
     initParticleField();
-    initStickFight();
+    initMemeBg();
   }
 
-  function getGridCell() {
-    return window.matchMedia("(max-width: 767px)").matches ? 32 : 44;
+  /* 各页背景热梗 meme 小图 */
+  var MEME_LAYOUTS = {
+    index: [
+      { src: "assets/memes/doge.jpg", left: "4%", top: "16%", size: 72, rotate: -14, float: "a", delay: 0 },
+      { src: "assets/memes/stonks.svg", left: "86%", top: "10%", size: 64, rotate: 10, float: "b", delay: 1.1 },
+      { src: "assets/memes/hachimi.svg", left: "80%", top: "58%", size: 58, rotate: 6, float: "c", delay: 0.5 },
+      { src: "assets/memes/brainrot.svg", left: "3%", top: "65%", size: 56, rotate: -8, float: "b", delay: 1.8 },
+    ],
+    about: [
+      { src: "assets/memes/harold.svg", left: "6%", top: "22%", size: 66, rotate: -6, float: "c", delay: 0.3 },
+      { src: "assets/memes/city.svg", left: "84%", top: "14%", size: 62, rotate: 12, float: "a", delay: 0.9 },
+      { src: "assets/memes/zundujiadu.svg", left: "78%", top: "68%", size: 60, rotate: -10, float: "b", delay: 1.5 },
+      { src: "assets/memes/this-is-fine.svg", left: "5%", top: "72%", size: 54, rotate: 8, float: "a", delay: 2.1 },
+    ],
+    articles: [
+      { src: "assets/memes/cat-table.svg", left: "5%", top: "18%", size: 68, rotate: -11, float: "b", delay: 0.2 },
+      { src: "assets/memes/mouse.svg", left: "87%", top: "12%", size: 62, rotate: 9, float: "c", delay: 1 },
+      { src: "assets/memes/distracted.svg", left: "82%", top: "62%", size: 58, rotate: -7, float: "a", delay: 1.6 },
+      { src: "assets/memes/hachimi.svg", left: "4%", top: "70%", size: 56, rotate: 5, float: "b", delay: 0.7 },
+    ],
+    contact: [
+      { src: "assets/memes/this-is-fine.svg", left: "7%", top: "20%", size: 64, rotate: -9, float: "a", delay: 0.4 },
+      { src: "assets/memes/doge.jpg", left: "85%", top: "16%", size: 68, rotate: 11, float: "c", delay: 1.2 },
+      { src: "assets/memes/harold.svg", left: "80%", top: "66%", size: 58, rotate: -5, float: "b", delay: 0.8 },
+      { src: "assets/memes/city.svg", left: "4%", top: "68%", size: 60, rotate: 7, float: "a", delay: 1.9 },
+    ],
+    article: [
+      { src: "assets/memes/mouse.svg", left: "6%", top: "24%", size: 60, rotate: -8, float: "c", delay: 0.6 },
+      { src: "assets/memes/stonks.svg", left: "88%", top: "18%", size: 58, rotate: 10, float: "a", delay: 1.3 },
+      { src: "assets/memes/zundujiadu.svg", left: "84%", top: "70%", size: 54, rotate: -6, float: "b", delay: 0.2 },
+      { src: "assets/memes/brainrot.svg", left: "5%", top: "74%", size: 52, rotate: 4, float: "c", delay: 1.7 },
+    ],
+  };
+
+  function getMemePageKey() {
+    var path = window.location.pathname.toLowerCase();
+    if (path.indexOf("about") !== -1) return "about";
+    if (path.indexOf("articles.html") !== -1 || /\/articles\/?$/.test(path)) return "articles";
+    if (path.indexOf("contact") !== -1) return "contact";
+    if (path.indexOf("article.html") !== -1 || path.indexOf("/posts/") !== -1) return "article";
+    return "index";
   }
 
-  /* 火柴小人自动对打：高约 2.5 格网格 */
-  function initStickFight() {
-    var canvas = document.createElement("canvas");
-    canvas.className = "fx-stickfight";
-    canvas.setAttribute("aria-hidden", "true");
-    document.body.prepend(canvas);
+  function initMemeBg() {
+    var mobile = window.matchMedia("(max-width: 767px)").matches;
+    var pageKey = getMemePageKey();
+    var layout = MEME_LAYOUTS[pageKey] || MEME_LAYOUTS.index;
+    var items = mobile ? layout.slice(0, 2) : layout;
 
-    var ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    var wrap = document.createElement("div");
+    wrap.className = "fx-meme-bg";
+    wrap.setAttribute("aria-hidden", "true");
 
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    var seqIndex = 0;
-    var seqFrame = 0;
-    var running = true;
-
-    var POSES = {
-      guard: {
-        torsoX: 0,
-        armL: { x: -0.26, y: -0.12 },
-        armR: { x: 0.26, y: -0.12 },
-        legL: { x: -0.17, y: 0.4 },
-        legR: { x: 0.14, y: 0.4 },
-      },
-      jab: {
-        torsoX: 0.07,
-        armL: { x: -0.22, y: -0.1 },
-        armR: { x: 0.58, y: -0.22 },
-        legL: { x: -0.19, y: 0.4 },
-        legR: { x: 0.11, y: 0.4 },
-      },
-      hook: {
-        torsoX: 0.05,
-        armL: { x: -0.2, y: -0.08 },
-        armR: { x: 0.42, y: -0.38 },
-        legL: { x: -0.2, y: 0.4 },
-        legR: { x: 0.1, y: 0.4 },
-      },
-      kick: {
-        torsoX: -0.06,
-        armL: { x: -0.3, y: -0.08 },
-        armR: { x: 0.22, y: -0.02 },
-        legL: { x: -0.14, y: 0.4 },
-        legR: { x: 0.52, y: -0.08 },
-      },
-      hurt: {
-        torsoX: -0.1,
-        armL: { x: -0.38, y: -0.32 },
-        armR: { x: 0.18, y: -0.28 },
-        legL: { x: -0.2, y: 0.36 },
-        legR: { x: 0.16, y: 0.38 },
-      },
-      block: {
-        torsoX: -0.03,
-        armL: { x: -0.18, y: -0.32 },
-        armR: { x: 0.18, y: -0.32 },
-        legL: { x: -0.17, y: 0.4 },
-        legR: { x: 0.14, y: 0.4 },
-      },
-    };
-
-    var SEQUENCE = [
-      { a: "guard", b: "guard", t: 16 },
-      { a: "jab", b: "guard", t: 5 },
-      { a: "guard", b: "hurt", t: 7 },
-      { a: "guard", b: "guard", t: 10 },
-      { a: "guard", b: "jab", t: 5 },
-      { a: "hurt", b: "guard", t: 7 },
-      { a: "guard", b: "hook", t: 6 },
-      { a: "hurt", b: "guard", t: 7 },
-      { a: "kick", b: "block", t: 7 },
-      { a: "guard", b: "guard", t: 8 },
-      { a: "guard", b: "kick", t: 7 },
-      { a: "block", b: "guard", t: 7 },
-      { a: "hook", b: "hurt", t: 6 },
-      { a: "guard", b: "guard", t: 12 },
-    ];
-
-    function limb(ctx, x0, y0, end, s) {
-      ctx.beginPath();
-      ctx.moveTo(x0, y0);
-      ctx.lineTo(x0 + end.x * s, y0 + end.y * s);
-      ctx.stroke();
-    }
-
-    function drawStickFigure(ctx, baseX, baseY, s, facing, pose, rgb) {
-      ctx.save();
-      ctx.translate(baseX, baseY);
-      ctx.scale(facing, 1);
-
-      var headR = s * 0.1;
-      var torsoLen = s * 0.34;
-      var neckY = -torsoLen;
-      var headY = neckY - headR * 1.15;
-      var shY = neckY + torsoLen * 0.12;
-      var hipX = pose.torsoX * s;
-
-      ctx.strokeStyle = "rgb(" + rgb + ")";
-      ctx.lineWidth = Math.max(1.5, s * 0.042);
-      ctx.lineCap = "round";
-      ctx.lineJoin = "round";
-
-      ctx.beginPath();
-      ctx.arc(0, headY, headR, 0, Math.PI * 2);
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.moveTo(0, neckY);
-      ctx.lineTo(hipX, 0);
-      ctx.stroke();
-
-      limb(ctx, 0, shY, pose.armL, s);
-      limb(ctx, 0, shY, pose.armR, s);
-      limb(ctx, hipX, 0, pose.legL, s);
-      limb(ctx, hipX, 0, pose.legR, s);
-
-      ctx.restore();
-    }
-
-    function drawImpact(ctx, x, y, s, alpha) {
-      if (alpha <= 0) return;
-      var rgb = getAccentRgb();
-      ctx.strokeStyle = "rgba(" + rgb + ", " + alpha + ")";
-      ctx.lineWidth = 1.2;
-      var r = s * 0.12;
-      for (var i = 0; i < 4; i++) {
-        var ang = (Math.PI / 2) * i + seqFrame * 0.4;
-        ctx.beginPath();
-        ctx.moveTo(x + Math.cos(ang) * r * 0.4, y + Math.sin(ang) * r * 0.4);
-        ctx.lineTo(x + Math.cos(ang) * r, y + Math.sin(ang) * r);
-        ctx.stroke();
-      }
-    }
-
-    function isHitPose(name) {
-      return name === "hurt";
-    }
-
-    function step() {
-      if (!running) return;
-
-      var cell = getGridCell();
-      var figureH = cell * 2.5;
-      var arenaW = Math.ceil(cell * 5.2);
-      var arenaH = Math.ceil(cell * 3.5);
-
-      canvas.width = Math.ceil(arenaW * dpr);
-      canvas.height = Math.ceil(arenaH * dpr);
-      canvas.style.width = arenaW + "px";
-      canvas.style.height = arenaH + "px";
-
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.clearRect(0, 0, arenaW, arenaH);
-
-      var stepDef = SEQUENCE[seqIndex];
-      var poseA = POSES[stepDef.a];
-      var poseB = POSES[stepDef.b];
-      var rgb = getAccentRgb();
-      var rgbB = getAccentRgb();
-
-      var groundY = arenaH - cell * 1.12;
-      var ax = cell * 1.15;
-      var bx = arenaW - cell * 1.15;
-      var midX = arenaW * 0.5;
-
-      drawStickFigure(ctx, ax, groundY, figureH, 1, poseA, rgb);
-      drawStickFigure(ctx, bx, groundY, figureH, -1, poseB, rgbB);
-
-      if (seqFrame < 4 && (isHitPose(stepDef.a) || isHitPose(stepDef.b))) {
-        var hitX = isHitPose(stepDef.b) ? bx - cell * 0.35 : ax + cell * 0.35;
-        drawImpact(ctx, hitX, groundY - figureH * 0.55, figureH, 0.85 - seqFrame * 0.2);
-      } else if (
-        seqFrame >= 3 &&
-        seqFrame <= 5 &&
-        (stepDef.a === "jab" || stepDef.a === "hook" || stepDef.a === "kick")
-      ) {
-        drawImpact(ctx, midX, groundY - figureH * 0.5, figureH, 0.55);
-      } else if (
-        seqFrame >= 3 &&
-        seqFrame <= 5 &&
-        (stepDef.b === "jab" || stepDef.b === "hook" || stepDef.b === "kick")
-      ) {
-        drawImpact(ctx, midX, groundY - figureH * 0.5, figureH, 0.55);
-      }
-
-      seqFrame++;
-      if (seqFrame >= stepDef.t) {
-        seqFrame = 0;
-        seqIndex = (seqIndex + 1) % SEQUENCE.length;
-      }
-
-      requestAnimationFrame(step);
-    }
-
-    step();
-
-    document.addEventListener("visibilitychange", function () {
-      running = !document.hidden;
-      if (running) step();
+    items.forEach(function (item) {
+      var img = document.createElement("img");
+      img.className = "fx-meme fx-meme--float-" + item.float;
+      img.src = item.src;
+      img.alt = "";
+      img.loading = "lazy";
+      img.decoding = "async";
+      img.draggable = false;
+      var size = mobile ? Math.round(item.size * 0.82) : item.size;
+      img.style.left = item.left;
+      img.style.top = item.top;
+      img.style.width = size + "px";
+      img.style.height = size + "px";
+      img.style.setProperty("--meme-rot", item.rotate + "deg");
+      img.style.setProperty("--meme-delay", item.delay + "s");
+      wrap.appendChild(img);
     });
+
+    document.body.prepend(wrap);
   }
 
   function getAccentRgb() {
@@ -799,6 +668,7 @@ var Fx = (function () {
 
     function onMove(e) {
       if (!drag) return;
+      if (e.cancelable) e.preventDefault();
       var p = getPos(e);
       drag.x = p.x;
       drag.y = p.y;

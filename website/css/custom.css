@@ -564,20 +564,50 @@ html.theme-animate *::after {
   }
 }
 
-/* --- 火柴小人对打 --- */
-.fx-stickfight {
+/* --- 背景热梗 meme 小图 --- */
+.fx-meme-bg {
   position: fixed;
-  z-index: 4;
+  inset: 0;
   pointer-events: none;
-  opacity: 0.72;
-  bottom: calc(2.75rem + env(safe-area-inset-bottom, 0px));
-  left: calc(1.25rem + env(safe-area-inset-left, 0px));
-  filter: drop-shadow(0 0 6px rgba(190, 59, 64, 0.25));
+  z-index: 2;
+  overflow: hidden;
 }
 
-[data-theme="dark"] .fx-stickfight {
-  opacity: 0.78;
+.fx-meme {
+  position: absolute;
+  border-radius: 0.65rem;
+  object-fit: cover;
+  opacity: 0.2;
+  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.06));
+  transform: rotate(var(--meme-rot, 0deg));
+  animation-delay: var(--meme-delay, 0s);
+  will-change: transform;
 }
+
+[data-theme="dark"] .fx-meme {
+  opacity: 0.26;
+  filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.2));
+}
+
+@keyframes fxMemeFloatA {
+  0%, 100% { transform: translateY(0) rotate(var(--meme-rot, 0deg)); }
+  50% { transform: translateY(-9px) rotate(calc(var(--meme-rot, 0deg) + 4deg)); }
+}
+
+@keyframes fxMemeFloatB {
+  0%, 100% { transform: translateY(0) rotate(var(--meme-rot, 0deg)); }
+  50% { transform: translateY(-6px) rotate(calc(var(--meme-rot, 0deg) - 3deg)); }
+}
+
+@keyframes fxMemeFloatC {
+  0%, 100% { transform: translateY(0) rotate(var(--meme-rot, 0deg)); }
+  33% { transform: translateY(-7px) rotate(calc(var(--meme-rot, 0deg) + 2deg)); }
+  66% { transform: translateY(-4px) rotate(calc(var(--meme-rot, 0deg) - 2deg)); }
+}
+
+.fx-meme--float-a { animation: fxMemeFloatA 7s ease-in-out infinite; }
+.fx-meme--float-b { animation: fxMemeFloatB 8.5s ease-in-out infinite; }
+.fx-meme--float-c { animation: fxMemeFloatC 6.5s ease-in-out infinite; }
 
 /* --- 背景装饰层 --- */
 .fx-bg-decor,
@@ -1128,13 +1158,8 @@ html.theme-animate *::after {
     animation-duration: 10s;
   }
 
-  .fx-stickfight {
-    left: 50%;
-    right: auto;
-    transform: translateX(-50%);
-    bottom: calc(2.5rem + env(safe-area-inset-bottom, 0px));
-    opacity: 0.88;
-    z-index: 4;
+  .fx-meme {
+    opacity: 0.16;
   }
 
   .fx-glow {
@@ -1166,7 +1191,7 @@ html.theme-animate *::after {
   }
 
   main {
-    padding-bottom: calc(9.5rem + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
   }
 
   .article-card {
@@ -1207,7 +1232,7 @@ html.theme-animate *::after {
   .fx-code-rain,
   .fx-bg-decor,
   .fx-particles,
-  .fx-stickfight {
+  .fx-meme-bg {
     display: none !important;
   }
 }
@@ -1299,5 +1324,14 @@ html.theme-animate *::after {
 
 html.jack-egg-active {
   overflow: hidden;
+}
+
+body.jack-egg-content-hidden {
+  background: var(--color-bg);
+}
+
+body.jack-egg-content-hidden > *:not(.jack-glass-shards) {
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 

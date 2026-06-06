@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="distracted">
+  <rect width="120" height="120" rx="12" fill="#e3f2fd"/>
+  <ellipse cx="28" cy="55" rx="12" ry="14" fill="#ffcc80"/>
+  <rect x="18" y="68" width="20" height="28" rx="3" fill="#ef5350"/>
+  <ellipse cx="60" cy="58" rx="11" ry="13" fill="#ffcc80"/>
+  <rect x="50" y="70" width="20" height="26" rx="3" fill="#42a5f5"/>
+  <path d="M60 58 L78 50" stroke="#333" stroke-width="2"/>
+  <ellipse cx="92" cy="55" rx="12" ry="14" fill="#ffcc80"/>
+  <rect x="82" y="68" width="20" height="28" rx="3" fill="#ff9800"/>
+  <text x="60" y="108" text-anchor="middle" fill="#1565c0" font-size="9" font-family="sans-serif">°—e†</text>
+</svg>
