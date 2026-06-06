@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#292929" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1A1A1A" media="(prefers-color-scheme: dark)">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="description" content="关于 Jack — 个人简介、兴趣爱好与生活理念">
+  <title>关于我 — Jack</title>
+  <script>
+    (function () {
+      var t = localStorage.getItem("blog-theme");
+      if (t === "dark" || (!t && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      } else {
+        document.documentElement.setAttribute("data-theme", "light");
+      }
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            warm: {
+              bg: "var(--color-bg)",
+              card: "var(--color-card)",
+              dark: "var(--color-dark)",
+              body: "var(--color-body)",
+              muted: "var(--color-muted)",
+              accent: "var(--color-accent)",
+              "accent-dark": "var(--color-accent-dark)",
+              border: "var(--color-border)",
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="css/custom.css">
+</head>
+<body class="bg-warm-bg text-warm-body min-h-screen flex flex-col tech-bg">
+
+  <header class="site-header sticky top-0 z-50 backdrop-blur-md border-b border-warm-border">
+    <nav class="max-w-4xl mx-auto px-4 sm:px-6 py-3" aria-label="主导航">
+      <div class="flex items-center gap-3 sm:gap-4">
+        <a href="index.html" class="text-lg font-semibold text-warm-dark tracking-wide shrink-0">Jack</a>
+        <div class="hidden md:flex items-center gap-6">
+          <a href="index.html" class="nav-link text-sm text-warm-body hover:text-warm-dark transition-colors">首页</a>
+          <a href="about.html" class="nav-link text-sm text-warm-body hover:text-warm-dark transition-colors">关于我</a>
+          <a href="articles.html" class="nav-link text-sm text-warm-body hover:text-warm-dark transition-colors">文章</a>
+          <a href="contact.html" class="nav-link text-sm text-warm-body hover:text-warm-dark transition-colors">联系</a>
+        </div>
+        <div class="flex items-center gap-2 sm:gap-3 ml-auto min-w-0">
+          <div class="search-wrap flex-1 min-w-0 max-w-[200px] sm:max-w-xs hidden sm:block">
+            <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"/>
+            </svg>
+            <input type="search" class="search-input" placeholder="搜索文章..." aria-label="搜索文章">
+          </div>
+          <button type="button" id="theme-toggle" class="theme-toggle" aria-label="切换深色/浅色模式">
+            <svg class="icon-moon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+            <svg class="icon-sun" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="5" stroke-width="2"/>
+              <path stroke-linecap="round" stroke-width="2" d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+            </svg>
+          </button>
+          <button id="menu-btn" class="md:hidden p-2 text-warm-dark rounded-lg hover:bg-warm-accent/10 transition-colors" aria-label="打开菜单" aria-expanded="false">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="sm:hidden mt-3 search-wrap">
+        <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"/>
+        </svg>
+        <input type="search" class="search-input" placeholder="搜索文章..." aria-label="搜索文章">
+      </div>
+      <div id="mobile-menu" class="md:hidden hidden-menu border-t border-warm-border mt-3">
+        <div class="pt-3 pb-4 flex flex-col gap-3">
+          <a href="index.html" class="nav-link text-sm text-warm-body px-1">首页</a>
+          <a href="about.html" class="nav-link text-sm text-warm-body px-1">关于我</a>
+          <a href="articles.html" class="nav-link text-sm text-warm-body px-1">文章</a>
+          <a href="contact.html" class="nav-link text-sm text-warm-body px-1">联系</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="flex-1 page-enter">
+    <div class="page-banner">
+      <div class="page-banner__bg" aria-hidden="true"></div>
+      <div class="page-banner__overlay" aria-hidden="true"></div>
+      <div class="page-banner__content max-w-4xl mx-auto px-4 sm:px-6">
+        <img src="assets/h.jpg" alt="Jack 的头像" class="w-20 h-20 rounded-full mx-auto mb-4 ring-4 ring-white/30 object-cover">
+        <h1 class="text-2xl md:text-3xl font-bold mb-2">关于我</h1>
+        <p>一个喜欢在细节里找答案的人</p>
+      </div>
+    </div>
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-12 md:py-16">
+
+      <div class="tech-gallery">
+        <figure class="tech-gallery__item">
+          <img src="assets/bg/robot-arm-hero.png" alt="AI 焊接机械臂">
+          <figcaption>机器视觉 · 智能焊接</figcaption>
+        </figure>
+        <figure class="tech-gallery__item">
+          <img src="assets/bg/3d-cloud.png" alt="高精度 3D 点云">
+          <figcaption>高精度 3D 视觉</figcaption>
+        </figure>
+        <figure class="tech-gallery__item">
+          <img src="assets/bg/accuracy.webp" alt="高速高精度测量">
+          <figcaption>高速高精度测量</figcaption>
+        </figure>
+        <figure class="tech-gallery__item">
+          <img src="assets/bg/weld-bg.png" alt="智慧物流与自动化">
+          <figcaption>智慧物流 · 自动化</figcaption>
+        </figure>
+      </div>
+
+      <section class="mb-12">
+        <h2 class="text-lg font-semibold text-warm-dark mb-4 flex items-center gap-2">
+          <span class="w-1 h-5 bg-warm-accent rounded-full inline-block"></span>
+          个人简介
+        </h2>
+        <div class="bg-warm-card rounded-2xl p-6 md:p-8 border border-warm-border leading-relaxed space-y-4">
+          <p>你好，我是 Jack。日常在机器人与视觉相关的工程里打转——3D 可视化、运动规划、电机控制、相机标定，这些是我工作的主要部分。</p>
+          <p>但比起「完成了什么功能」，我更在意过程里怎么想：把模糊的目标拆成可执行的步骤，在反复调试里保持耐心，在团队协作中学会设定边界。</p>
+          <p>这个网站是我留给自己的角落。技术笔记、生活片段、偶尔的困惑与顿悟，都希望能被诚实地记录下来。</p>
+        </div>
+      </section>
+
+      <section class="mb-12">
+        <h2 class="text-lg font-semibold text-warm-dark mb-4 flex items-center gap-2">
+          <span class="w-1 h-5 bg-warm-accent rounded-full inline-block"></span>
+          兴趣爱好
+        </h2>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div class="bg-warm-card rounded-2xl p-6 border border-warm-border">
+            <div class="text-2xl mb-3">🔧</div>
+            <h3 class="font-medium text-warm-dark mb-2">工程与代码</h3>
+            <p class="text-sm text-warm-muted leading-relaxed">喜欢把复杂系统模块化，也享受从零跑通一个功能时的成就感。</p>
+          </div>
+          <div class="bg-warm-card rounded-2xl p-6 border border-warm-border">
+            <div class="text-2xl mb-3">📖</div>
+            <h3 class="font-medium text-warm-dark mb-2">阅读与写作</h3>
+            <p class="text-sm text-warm-muted leading-relaxed">用工作日志梳理思路，偶尔把片段整理成可以分享的文字。</p>
+          </div>
+          <div class="bg-warm-card rounded-2xl p-6 border border-warm-border">
+            <div class="text-2xl mb-3">🌿</div>
+            <h3 class="font-medium text-warm-dark mb-2">慢生活</h3>
+            <p class="text-sm text-warm-muted leading-relaxed">走路、发呆、观察日常——不追求填满每一分钟。</p>
+          </div>
+          <div class="bg-warm-card rounded-2xl p-6 border border-warm-border">
+            <div class="text-2xl mb-3">🎯</div>
+            <h3 class="font-medium text-warm-dark mb-2">拆解问题</h3>
+            <p class="text-sm text-warm-muted leading-relaxed">面对一团乱麻时，先问「目的是什么」，再一步步细化。</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold text-warm-dark mb-4 flex items-center gap-2">
+          <span class="w-1 h-5 bg-warm-accent rounded-full inline-block"></span>
+          生活理念
+        </h2>
+        <div class="bg-warm-card rounded-2xl p-6 md:p-8 border border-warm-border space-y-6">
+          <blockquote class="border-l-3 border-warm-accent pl-4 text-warm-muted italic">
+            「允许自己状态不好，不是懈怠，是为下一轮蓄力。」
+          </blockquote>
+          <ul class="space-y-4 text-sm leading-relaxed">
+            <li class="flex gap-3">
+              <span class="text-warm-accent font-bold shrink-0">01</span>
+              <span><strong class="text-warm-dark">诚实面对状态</strong> — 疲惫的日子也值得被记录，硬撑不是唯一的选择。</span>
+            </li>
+            <li class="flex gap-3">
+              <span class="text-warm-accent font-bold shrink-0">02</span>
+              <span><strong class="text-warm-dark">小步快跑</strong> — 大目标让人瘫痪，可执行的小步骤让人动起来。</span>
+            </li>
+            <li class="flex gap-3">
+              <span class="text-warm-accent font-bold shrink-0">03</span>
+              <span><strong class="text-warm-dark">保留温度</strong> — 效率之外，还有值得被温柔对待的东西。</span>
+            </li>
+            <li class="flex gap-3">
+              <span class="text-warm-accent font-bold shrink-0">04</span>
+              <span><strong class="text-warm-dark">设定边界</strong> — 精力有限，先把自己能控的部分做好。</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="border-t border-warm-border">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-8 text-center text-sm text-warm-muted">
+      <p>&copy; <span id="current-year"></span> Jack. 用心记录，慢慢生活。</p>
+    </div>
+  </footer>
+
+  <script src="js/theme.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
