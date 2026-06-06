@@ -1272,49 +1272,32 @@ html.theme-animate *::after {
 .jack-crack-overlay {
   position: fixed;
   inset: 0;
-  z-index: 99980;
+  z-index: 99985;
   pointer-events: none;
-  background: rgba(0, 0, 0, 0.08);
 }
 
-.jack-shatter-burst {
+.jack-glass-pane {
   position: fixed;
   inset: 0;
-  z-index: 99995;
+  z-index: 99980;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(4px) saturate(1.1);
+  -webkit-backdrop-filter: blur(4px) saturate(1.1);
+}
+
+[data-theme="dark"] .jack-glass-pane {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.jack-glass-shards {
+  position: fixed;
+  inset: 0;
+  z-index: 99990;
   pointer-events: none;
 }
 
 html.jack-egg-active {
   overflow: hidden;
-}
-
-html.jack-egg-shatter {
-  overflow: hidden;
-}
-
-html.jack-egg-shatter .jack-shatter-piece {
-  animation: jackPieceFly 1.55s cubic-bezier(0.45, 0, 0.85, 0.4) forwards;
-  animation-delay: var(--jack-delay, 0s);
-  transform-origin: center center;
-  will-change: transform, opacity, filter;
-}
-
-@keyframes jackPieceFly {
-  0% {
-    transform: translate(0, 0) rotate(0deg) scale(1);
-    opacity: 1;
-    filter: blur(0);
-  }
-  35% {
-    filter: blur(0);
-  }
-  100% {
-    transform:
-      translate(calc(var(--jack-dx, 0) * 55vw), calc(var(--jack-dy, 0) * 55vh))
-      rotate(var(--jack-rot, 0deg))
-      scale(0.15);
-    opacity: 0;
-    filter: blur(10px) brightness(1.35);
-  }
 }
 
