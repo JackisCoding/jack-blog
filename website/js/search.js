@@ -8,7 +8,12 @@ var Search = (function () {
     return posts.filter(function (post) {
       var title = (post.title || "").toLowerCase();
       var summary = (post.summary || "").toLowerCase();
-      return title.indexOf(q) !== -1 || summary.indexOf(q) !== -1;
+      var tags = (post.tags || []).join(" ").toLowerCase();
+      return (
+        title.indexOf(q) !== -1 ||
+        summary.indexOf(q) !== -1 ||
+        tags.indexOf(q) !== -1
+      );
     });
   }
 

@@ -6,7 +6,9 @@
 (function () {
   var listContainer = document.getElementById("article-list");
   var detailContainer = document.getElementById("article-detail");
+  var filterContainer = document.getElementById("article-filters");
   var allPosts = [];
+  var activeTag = "";
 
   if (!listContainer && !detailContainer) return;
 
@@ -17,21 +19,82 @@
       })
       .catch(handleError);
   } else {
+    activeTag = getTagFromUrl();
     Posts.loadAll()
       .then(function (posts) {
         allPosts = posts;
+        renderFilters(posts);
         renderList(getFilteredPosts());
       })
       .catch(handleError);
 
     document.addEventListener("article-search", function (e) {
-      renderList(Search.filterPosts(allPosts, e.detail.query));
+      renderList(getFilteredPosts(e.detail.query));
     });
   }
 
-  function getFilteredPosts() {
-    var q = new URLSearchParams(window.location.search).get("q") || "";
-    return Search.filterPosts(allPosts, q.trim().toLowerCase());
+  function getTagFromUrl() {
+    return new URLSearchParams(window.location.search).get("tag") || "";
+  }
+
+  function getFilteredPosts(searchQuery) {
+    var q =
+      typeof searchQuery === "string"
+        ? searchQuery
+        : new URLSearchParams(window.location.search).get("q") || "";
+    q = q.trim().toLowerCase();
+    var posts = Search.filterPosts(allPosts, q);
+    if (activeTag) {
+      posts = posts.filter(function (post) {
+        return (post.tags || []).indexOf(activeTag) !== -1;
+      });
+    }
+    return posts;
+  }
+
+  function renderFilters(posts) {
+    if (!filterContainer) return;
+
+    var tagCounts = {};
+    posts.forEach(function (post) {
+      (post.tags || []).forEach(function (tag) {
+        tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+      });
+    });
+
+    var tags = Object.keys(tagCounts).sort(function (a, b) {
+      if (a === "个人日记") return -1;
+      if (b === "个人日记") return 1;
+      return tagCounts[b] - tagCounts[a];
+    });
+
+    var chips = [
+      renderFilterChip("全部", posts.length, !activeTag, "articles.html"),
+    ].concat(
+      tags.map(function (tag) {
+        var href = "articles.html?tag=" + encodeURIComponent(tag);
+        return renderFilterChip(tag, tagCounts[tag], activeTag === tag, href);
+      })
+    );
+
+    filterContainer.innerHTML = chips.join("");
+  }
+
+  function renderFilterChip(label, count, isActive, href) {
+    var cls = isActive
+      ? "tag-filter tag-filter--active"
+      : "tag-filter";
+    return (
+      '<a href="' +
+      href +
+      '" class="' +
+      cls +
+      '">' +
+      Posts.escapeHtml(label) +
+      ' <span class="tag-filter__count">' +
+      count +
+      "</span></a>"
+    );
   }
 
   function renderList(posts) {
@@ -40,10 +103,15 @@
     if (input) searchQuery = input.value.trim();
 
     if (!posts.length) {
-      listContainer.innerHTML = searchQuery
-        ? '<p class="text-warm-muted text-center py-12">未找到匹配「' +
-          Posts.escapeHtml(searchQuery) +
-          "」的文章</p>"
+      var hint = activeTag
+        ? "「" + activeTag + "」分类下"
+        : searchQuery
+          ? "「" + Posts.escapeHtml(searchQuery) + "」"
+          : "";
+      listContainer.innerHTML = hint
+        ? '<p class="text-warm-muted text-center py-12">未找到匹配' +
+          hint +
+          "的文章</p>"
         : '<p class="text-warm-muted text-center py-12">暂无文章，请在 posts 文件夹中添加 .md 文件。</p>';
       return;
     }

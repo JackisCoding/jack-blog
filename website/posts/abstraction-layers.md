@@ -1,7 +1,7 @@
 ---
 title: 从 I²C 到 UDP：抽象层次与「实感」
 date: 2025-08-04
-tags: 成长
+tags: 成长, 个人日记
 summary: 写 DSP 上的 I²C 和 Linux 上的 UDP，完全是两种与世界打交道的方式。
 ---
 
