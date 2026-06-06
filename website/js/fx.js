@@ -12,8 +12,8 @@ var Fx = (function () {
 
   var mx = 0;
   var my = 0;
-  var cx = 0;
-  var cy = 0;
+  var rcx = 0;
+  var rcy = 0;
   var glowX = 0;
   var glowY = 0;
   var rafId = 0;
@@ -70,6 +70,10 @@ var Fx = (function () {
         my = e.clientY;
         glowX = e.clientX;
         glowY = e.clientY;
+        if (!rcx && !rcy) {
+          rcx = mx;
+          rcy = my;
+        }
       },
       { passive: true }
     );
@@ -140,15 +144,16 @@ var Fx = (function () {
   }
 
   function tick() {
-    cx += (mx - cx) * 0.18;
-    cy += (my - cy) * 0.18;
+    /* 圆点即时跟随；外环保留轻微平滑 */
+    rcx += (mx - rcx) * 0.55;
+    rcy += (my - rcy) * 0.55;
 
     if (cursorDot && cursorRing) {
       cursorDot.style.transform =
-        "translate(" + cx + "px, " + cy + "px) translate(-50%, -50%)";
+        "translate(" + mx + "px, " + my + "px) translate(-50%, -50%)";
       var scale = hovering ? 1.6 : 1;
       cursorRing.style.transform =
-        "translate(" + cx + "px, " + cy + "px) translate(-50%, -50%) scale(" +
+        "translate(" + rcx + "px, " + rcy + "px) translate(-50%, -50%) scale(" +
         scale +
         ")";
     }
