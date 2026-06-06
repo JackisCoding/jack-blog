@@ -119,6 +119,212 @@ var Fx = (function () {
 
     document.body.prepend(wrap);
     initParticleField();
+    initStickFight();
+  }
+
+  function getGridCell() {
+    return window.matchMedia("(max-width: 767px)").matches ? 32 : 44;
+  }
+
+  /* 火柴小人自动对打：高约 2.5 格网格 */
+  function initStickFight() {
+    var canvas = document.createElement("canvas");
+    canvas.className = "fx-stickfight";
+    canvas.setAttribute("aria-hidden", "true");
+    document.body.prepend(canvas);
+
+    var ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var seqIndex = 0;
+    var seqFrame = 0;
+    var running = true;
+
+    var POSES = {
+      guard: {
+        torsoX: 0,
+        armL: { x: -0.26, y: -0.12 },
+        armR: { x: 0.26, y: -0.12 },
+        legL: { x: -0.17, y: 0.4 },
+        legR: { x: 0.14, y: 0.4 },
+      },
+      jab: {
+        torsoX: 0.07,
+        armL: { x: -0.22, y: -0.1 },
+        armR: { x: 0.58, y: -0.22 },
+        legL: { x: -0.19, y: 0.4 },
+        legR: { x: 0.11, y: 0.4 },
+      },
+      hook: {
+        torsoX: 0.05,
+        armL: { x: -0.2, y: -0.08 },
+        armR: { x: 0.42, y: -0.38 },
+        legL: { x: -0.2, y: 0.4 },
+        legR: { x: 0.1, y: 0.4 },
+      },
+      kick: {
+        torsoX: -0.06,
+        armL: { x: -0.3, y: -0.08 },
+        armR: { x: 0.22, y: -0.02 },
+        legL: { x: -0.14, y: 0.4 },
+        legR: { x: 0.52, y: -0.08 },
+      },
+      hurt: {
+        torsoX: -0.1,
+        armL: { x: -0.38, y: -0.32 },
+        armR: { x: 0.18, y: -0.28 },
+        legL: { x: -0.2, y: 0.36 },
+        legR: { x: 0.16, y: 0.38 },
+      },
+      block: {
+        torsoX: -0.03,
+        armL: { x: -0.18, y: -0.32 },
+        armR: { x: 0.18, y: -0.32 },
+        legL: { x: -0.17, y: 0.4 },
+        legR: { x: 0.14, y: 0.4 },
+      },
+    };
+
+    var SEQUENCE = [
+      { a: "guard", b: "guard", t: 16 },
+      { a: "jab", b: "guard", t: 5 },
+      { a: "guard", b: "hurt", t: 7 },
+      { a: "guard", b: "guard", t: 10 },
+      { a: "guard", b: "jab", t: 5 },
+      { a: "hurt", b: "guard", t: 7 },
+      { a: "guard", b: "hook", t: 6 },
+      { a: "hurt", b: "guard", t: 7 },
+      { a: "kick", b: "block", t: 7 },
+      { a: "guard", b: "guard", t: 8 },
+      { a: "guard", b: "kick", t: 7 },
+      { a: "block", b: "guard", t: 7 },
+      { a: "hook", b: "hurt", t: 6 },
+      { a: "guard", b: "guard", t: 12 },
+    ];
+
+    function limb(ctx, x0, y0, end, s) {
+      ctx.beginPath();
+      ctx.moveTo(x0, y0);
+      ctx.lineTo(x0 + end.x * s, y0 + end.y * s);
+      ctx.stroke();
+    }
+
+    function drawStickFigure(ctx, baseX, baseY, s, facing, pose, rgb) {
+      ctx.save();
+      ctx.translate(baseX, baseY);
+      ctx.scale(facing, 1);
+
+      var headR = s * 0.1;
+      var torsoLen = s * 0.34;
+      var neckY = -torsoLen;
+      var headY = neckY - headR * 1.15;
+      var shY = neckY + torsoLen * 0.12;
+      var hipX = pose.torsoX * s;
+
+      ctx.strokeStyle = "rgb(" + rgb + ")";
+      ctx.lineWidth = Math.max(1.5, s * 0.042);
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+
+      ctx.beginPath();
+      ctx.arc(0, headY, headR, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(0, neckY);
+      ctx.lineTo(hipX, 0);
+      ctx.stroke();
+
+      limb(ctx, 0, shY, pose.armL, s);
+      limb(ctx, 0, shY, pose.armR, s);
+      limb(ctx, hipX, 0, pose.legL, s);
+      limb(ctx, hipX, 0, pose.legR, s);
+
+      ctx.restore();
+    }
+
+    function drawImpact(ctx, x, y, s, alpha) {
+      if (alpha <= 0) return;
+      var rgb = getAccentRgb();
+      ctx.strokeStyle = "rgba(" + rgb + ", " + alpha + ")";
+      ctx.lineWidth = 1.2;
+      var r = s * 0.12;
+      for (var i = 0; i < 4; i++) {
+        var ang = (Math.PI / 2) * i + seqFrame * 0.4;
+        ctx.beginPath();
+        ctx.moveTo(x + Math.cos(ang) * r * 0.4, y + Math.sin(ang) * r * 0.4);
+        ctx.lineTo(x + Math.cos(ang) * r, y + Math.sin(ang) * r);
+        ctx.stroke();
+      }
+    }
+
+    function isHitPose(name) {
+      return name === "hurt";
+    }
+
+    function step() {
+      if (!running) return;
+
+      var cell = getGridCell();
+      var figureH = cell * 2.5;
+      var arenaW = Math.ceil(cell * 5.2);
+      var arenaH = Math.ceil(cell * 2.8);
+
+      canvas.width = Math.ceil(arenaW * dpr);
+      canvas.height = Math.ceil(arenaH * dpr);
+      canvas.style.width = arenaW + "px";
+      canvas.style.height = arenaH + "px";
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, arenaW, arenaH);
+
+      var stepDef = SEQUENCE[seqIndex];
+      var poseA = POSES[stepDef.a];
+      var poseB = POSES[stepDef.b];
+      var rgb = getAccentRgb();
+      var rgbB = getAccentRgb();
+
+      var groundY = arenaH - cell * 0.25;
+      var ax = cell * 1.15;
+      var bx = arenaW - cell * 1.15;
+      var midX = arenaW * 0.5;
+
+      drawStickFigure(ctx, ax, groundY, figureH, 1, poseA, rgb);
+      drawStickFigure(ctx, bx, groundY, figureH, -1, poseB, rgbB);
+
+      if (seqFrame < 4 && (isHitPose(stepDef.a) || isHitPose(stepDef.b))) {
+        var hitX = isHitPose(stepDef.b) ? bx - cell * 0.35 : ax + cell * 0.35;
+        drawImpact(ctx, hitX, groundY - figureH * 0.55, figureH, 0.85 - seqFrame * 0.2);
+      } else if (
+        seqFrame >= 3 &&
+        seqFrame <= 5 &&
+        (stepDef.a === "jab" || stepDef.a === "hook" || stepDef.a === "kick")
+      ) {
+        drawImpact(ctx, midX, groundY - figureH * 0.5, figureH, 0.55);
+      } else if (
+        seqFrame >= 3 &&
+        seqFrame <= 5 &&
+        (stepDef.b === "jab" || stepDef.b === "hook" || stepDef.b === "kick")
+      ) {
+        drawImpact(ctx, midX, groundY - figureH * 0.5, figureH, 0.55);
+      }
+
+      seqFrame++;
+      if (seqFrame >= stepDef.t) {
+        seqFrame = 0;
+        seqIndex = (seqIndex + 1) % SEQUENCE.length;
+      }
+
+      requestAnimationFrame(step);
+    }
+
+    step();
+
+    document.addEventListener("visibilitychange", function () {
+      running = !document.hidden;
+      if (running) step();
+    });
   }
 
   function getAccentRgb() {

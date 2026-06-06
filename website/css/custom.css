@@ -547,6 +547,28 @@ html.theme-animate *::after {
   to { background-position: 44px 44px, 44px 44px; }
 }
 
+@media (max-width: 767px) {
+  @keyframes fxGridDrift {
+    from { background-position: 0 0, 0 0; }
+    to { background-position: 32px 32px, 32px 32px; }
+  }
+}
+
+/* --- 火柴小人对打 --- */
+.fx-stickfight {
+  position: fixed;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.72;
+  bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+  left: calc(1.25rem + env(safe-area-inset-left, 0px));
+  filter: drop-shadow(0 0 6px rgba(190, 59, 64, 0.25));
+}
+
+[data-theme="dark"] .fx-stickfight {
+  opacity: 0.78;
+}
+
 /* --- 背景装饰层 --- */
 .fx-bg-decor,
 .fx-particles {
@@ -732,7 +754,7 @@ html.theme-animate *::after {
   border-left: 28px solid transparent;
   border-right: 28px solid transparent;
   border-bottom: 48px solid color-mix(in srgb, var(--color-accent) 25%, transparent);
-  animation: fxFloatA 16s ease-in-out infinite reverse, fxSpin 50s linear infinite reverse;
+  animation: fxFloatA 16s ease-in-out infinite reverse;
 }
 
 @keyframes fxFloatA {
@@ -1051,7 +1073,8 @@ html.theme-animate *::after {
   }
 
   .fx-shapes .fx-shape--ring,
-  .fx-shapes .fx-shape--hex {
+  .fx-shapes .fx-shape--hex,
+  .fx-shapes .fx-shape--tri {
     display: none;
   }
 
@@ -1063,6 +1086,85 @@ html.theme-animate *::after {
   .fx-particles {
     opacity: 0.55;
   }
+
+  .fx-scanline {
+    opacity: 0.35;
+    animation-duration: 10s;
+  }
+
+  .fx-stickfight {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    bottom: calc(0.65rem + env(safe-area-inset-bottom, 0px));
+    opacity: 0.62;
+  }
+
+  .fx-glow {
+    width: min(420px, 85vw);
+    height: min(420px, 85vw);
+    opacity: 0.75;
+  }
+
+  body {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .hero-banner__content {
+    padding-top: 2.5rem !important;
+    padding-bottom: 1.25rem !important;
+  }
+
+  .hero-banner__content h1 {
+    font-size: 1.75rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem !important;
+    line-height: 1.65 !important;
+  }
+
+  .page-banner {
+    padding: 2rem 0;
+  }
+
+  .page-banner__content h1 {
+    font-size: 1.5rem;
+  }
+
+  main {
+    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .article-card {
+    padding: 1.15rem !important;
+  }
+
+  #article-filters {
+    gap: 0.4rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .tag-filter {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.7rem;
+  }
+
+  footer {
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .prose-content {
+    font-size: 0.9375rem;
+  }
+
+  .prose-content h2 {
+    font-size: 1.125rem;
+  }
+
+  .tech-gallery__item img {
+    height: 140px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1071,7 +1173,8 @@ html.theme-animate *::after {
   .fx-physics,
   .fx-code-rain,
   .fx-bg-decor,
-  .fx-particles {
+  .fx-particles,
+  .fx-stickfight {
     display: none !important;
   }
 }
