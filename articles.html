@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#292929" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1A1A1A" media="(prefers-color-scheme: dark)">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="description" content="Jack 的博客文章列表">
+  <title>文章 — Jack</title>
+  <script>
+    (function () {
+      var t = localStorage.getItem("blog-theme");
+      if (t === "dark" || (!t && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      } else {
+        document.documentElement.setAttribute("data-theme", "light");
+      }
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            warm: {
+              bg: "var(--color-bg)",
+              card: "var(--color-card)",
+              dark: "var(--color-dark)",
+              body: "var(--color-body)",
+              muted: "var(--color-muted)",
+              accent: "var(--color-accent)",
+              "accent-dark": "var(--color-accent-dark)",
+              border: "var(--color-border)",
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="css/custom.css">
+</head>
+<body class="bg-warm-bg text-warm-body min-h-screen flex flex-col tech-bg">
+
+  <header class="site-header sticky top-0 z-50 backdrop-blur-md border-b border-warm-border">
+    <nav class="max-w-4xl mx-auto px-4 sm:px-6 py-3" aria-label="主导航">
+      <div class="flex items-center gap-3 sm:gap-4">
+        <a href="index.html" class="text-lg font-semibold text-warm-dark tracking-wide shrink-0">Jack</a>
+        <div class="hidden md:flex items-center gap-6">
+          <a href="index.html" class="nav-link text-sm text-warm-body hover:text-warm-dark transition-colors">首页</a>
+          <a href="about.html" class="nav-link text-sm text-warm-body hover:text-warm-dark transition-colors">关于我</a>
+          <a href="articles.html" class="nav-link text-sm text-warm-body hover:text-warm-dark transition-colors">文章</a>
+          <a href="contact.html" class="nav-link text-sm text-warm-body hover:text-warm-dark transition-colors">联系</a>
+        </div>
+        <div class="flex items-center gap-2 sm:gap-3 ml-auto min-w-0">
+          <div class="search-wrap flex-1 min-w-0 max-w-[200px] sm:max-w-xs hidden sm:block">
+            <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"/>
+            </svg>
+            <input type="search" class="search-input" placeholder="搜索文章..." aria-label="搜索文章">
+          </div>
+          <button type="button" id="theme-toggle" class="theme-toggle" aria-label="切换深色/浅色模式">
+            <svg class="icon-moon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+            <svg class="icon-sun" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="5" stroke-width="2"/>
+              <path stroke-linecap="round" stroke-width="2" d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+            </svg>
+          </button>
+          <button id="menu-btn" class="md:hidden p-2 text-warm-dark rounded-lg hover:bg-warm-accent/10 transition-colors" aria-label="打开菜单" aria-expanded="false">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="sm:hidden mt-3 search-wrap">
+        <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"/>
+        </svg>
+        <input type="search" class="search-input" placeholder="搜索文章..." aria-label="搜索文章">
+      </div>
+      <div id="mobile-menu" class="md:hidden hidden-menu border-t border-warm-border mt-3">
+        <div class="pt-3 pb-4 flex flex-col gap-3">
+          <a href="index.html" class="nav-link text-sm text-warm-body px-1">首页</a>
+          <a href="about.html" class="nav-link text-sm text-warm-body px-1">关于我</a>
+          <a href="articles.html" class="nav-link text-sm text-warm-body px-1">文章</a>
+          <a href="contact.html" class="nav-link text-sm text-warm-body px-1">联系</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="flex-1 page-enter">
+    <div class="page-banner">
+      <div class="page-banner__bg" aria-hidden="true"></div>
+      <div class="page-banner__overlay" aria-hidden="true"></div>
+      <div class="page-banner__content max-w-4xl mx-auto px-4 sm:px-6">
+        <h1 class="text-2xl md:text-3xl font-bold mb-3">文章</h1>
+        <p>生活片段、工作思考与偶尔的顿悟</p>
+      </div>
+    </div>
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-12 md:py-16">
+      <div id="article-list" class="grid gap-6">
+        <div class="text-center py-12 text-warm-muted text-sm">正在加载文章...</div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="border-t border-warm-border">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-8 text-center text-sm text-warm-muted">
+      <p>&copy; <span id="current-year"></span> Jack. 用心记录，慢慢生活。</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/posts.js"></script>
+  <script src="js/articles.js"></script>
+</body>
+</html>

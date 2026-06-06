@@ -1,0 +1,486 @@
+/* ===== 主题变量：参考墨家科技 mohisttech.com ===== */
+:root,
+[data-theme="light"] {
+  --color-bg: #F5F5F5;
+  --color-card: #FFFFFF;
+  --color-dark: #292929;
+  --color-body: #606060;
+  --color-muted: #969696;
+  --color-accent: #BE3B40;
+  --color-accent-dark: #C52323;
+  --color-border: #E0E0E0;
+  --color-accent-soft: rgba(190, 59, 64, 0.12);
+  --color-code-bg: #F6F6F6;
+  --color-prose: #606060;
+  --color-prose-heading: #292929;
+  --color-blockquote: #707070;
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.06);
+  --shadow-card-hover: 0 12px 36px rgba(190, 59, 64, 0.12);
+  --header-bg: rgba(255, 255, 255, 0.94);
+  --hero-overlay: linear-gradient(105deg, rgba(41, 41, 41, 0.88) 0%, rgba(41, 41, 41, 0.72) 45%, rgba(190, 59, 64, 0.25) 100%);
+}
+
+[data-theme="dark"] {
+  --color-bg: #1A1A1A;
+  --color-card: #292929;
+  --color-dark: #F5F5F5;
+  --color-body: #D9D9D9;
+  --color-muted: #B1B1B1;
+  --color-accent: #DC4247;
+  --color-accent-dark: #BE3B40;
+  --color-border: #404040;
+  --color-accent-soft: rgba(220, 66, 71, 0.18);
+  --color-code-bg: #333333;
+  --color-prose: #D9D9D9;
+  --color-prose-heading: #FFFFFF;
+  --color-blockquote: #B1B1B1;
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.35);
+  --shadow-card-hover: 0 12px 36px rgba(190, 59, 64, 0.2);
+  --header-bg: rgba(26, 26, 26, 0.94);
+  --hero-overlay: linear-gradient(105deg, rgba(0, 0, 0, 0.88) 0%, rgba(41, 41, 41, 0.78) 45%, rgba(190, 59, 64, 0.2) 100%);
+}
+
+/* ===== 基础 ===== */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 主题切换平滑过渡 */
+html.theme-animate,
+html.theme-animate *,
+html.theme-animate *::before,
+html.theme-animate *::after {
+  transition:
+    background-color 0.35s ease,
+    color 0.35s ease,
+    border-color 0.35s ease,
+    box-shadow 0.35s ease,
+    fill 0.35s ease,
+    stroke 0.35s ease !important;
+}
+
+/* ===== 导航 ===== */
+.site-header {
+  background-color: var(--header-bg);
+}
+
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-accent), var(--color-accent-dark));
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
+}
+
+/* ===== 搜索框 ===== */
+.search-input {
+  width: 100%;
+  padding: 0.45rem 0.75rem 0.45rem 2.25rem;
+  font-size: 0.875rem;
+  border-radius: 9999px;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-card);
+  color: var(--color-body);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-input::placeholder {
+  color: var(--color-muted);
+}
+
+.search-input:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-soft);
+}
+
+.search-wrap {
+  position: relative;
+}
+
+.search-wrap .search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1rem;
+  height: 1rem;
+  color: var(--color-muted);
+  pointer-events: none;
+}
+
+/* ===== 主题切换按钮 ===== */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 9999px;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-card);
+  color: var(--color-body);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.theme-toggle:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  transform: scale(1.05);
+}
+
+.theme-toggle .icon-sun,
+.theme-toggle .icon-moon {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+[data-theme="light"] .theme-toggle .icon-sun {
+  display: none;
+}
+
+[data-theme="light"] .theme-toggle .icon-moon {
+  display: block;
+}
+
+[data-theme="dark"] .theme-toggle .icon-sun {
+  display: block;
+}
+
+[data-theme="dark"] .theme-toggle .icon-moon {
+  display: none;
+}
+
+/* ===== 文章卡片 ===== */
+.article-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: var(--shadow-card);
+}
+
+.article-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+/* ===== 社交链接 ===== */
+.social-link {
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.social-link:hover {
+  transform: translateY(-2px);
+}
+
+/* ===== 移动端菜单 ===== */
+#mobile-menu {
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+
+#mobile-menu.hidden-menu {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+
+#mobile-menu.open-menu {
+  max-height: 400px;
+  opacity: 1;
+}
+
+/* ===== 页面淡入 ===== */
+.page-enter {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== 墨家科技风格：首页 Hero ===== */
+.hero-banner {
+  position: relative;
+  overflow: hidden;
+  min-height: 420px;
+  display: flex;
+  align-items: center;
+}
+
+.hero-banner__bg {
+  position: absolute;
+  inset: 0;
+  background: url("../assets/bg/weld-bg.png") center center / cover no-repeat;
+  transform: scale(1.02);
+}
+
+.hero-banner__overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--hero-overlay);
+}
+
+.hero-banner__robot {
+  position: absolute;
+  right: 2%;
+  bottom: 0;
+  width: min(420px, 46vw);
+  max-height: 92%;
+  object-fit: contain;
+  object-position: bottom right;
+  z-index: 2;
+  pointer-events: none;
+  filter: drop-shadow(0 8px 32px rgba(0, 0, 0, 0.35));
+}
+
+.hero-banner__content {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+}
+
+.hero-banner__content .hero-avatar {
+  border: 4px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+}
+
+.hero-banner__content h1,
+.hero-banner__content p {
+  color: #FFFFFF;
+}
+
+.hero-banner__content .hero-subtitle {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.hero-banner__content .btn-outline-light {
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(4px);
+}
+
+.hero-banner__content .btn-outline-light:hover {
+  border-color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* ===== 内页顶部 Banner ===== */
+.page-banner {
+  position: relative;
+  overflow: hidden;
+  padding: 3rem 0;
+  text-align: center;
+}
+
+.page-banner__bg {
+  position: absolute;
+  inset: 0;
+  background: url("../assets/bg/weld-bg.png") center 30% / cover no-repeat;
+  opacity: 0.35;
+}
+
+.page-banner__overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--hero-overlay);
+}
+
+.page-banner__content {
+  position: relative;
+  z-index: 1;
+}
+
+.page-banner__content h1 {
+  color: #FFFFFF;
+}
+
+.page-banner__content p {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* ===== 科技展示图（关于页） ===== */
+.tech-gallery {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+.tech-gallery__item {
+  border-radius: 1rem;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+  box-shadow: var(--shadow-card);
+}
+
+.tech-gallery__item img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+}
+
+.tech-gallery__item figcaption {
+  padding: 0.75rem 1rem;
+  font-size: 0.8125rem;
+  color: var(--color-muted);
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .hero-banner {
+    min-height: auto;
+    padding-bottom: 0;
+  }
+
+  .hero-banner__robot {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    width: min(280px, 75vw);
+    margin: 1.5rem auto 0;
+    display: block;
+  }
+
+  .hero-banner__content {
+    padding-bottom: 1rem !important;
+  }
+
+  .tech-gallery {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== 页面背景 ===== */
+.tech-bg {
+  background-color: var(--color-bg);
+}
+
+/* ===== 文章正文排版 ===== */
+.prose-content p {
+  margin-bottom: 1.25rem;
+  line-height: 1.85;
+  color: var(--color-prose);
+}
+
+.prose-content h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-prose-heading);
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.prose-content blockquote {
+  border-left: 3px solid var(--color-accent);
+  padding-left: 1rem;
+  color: var(--color-blockquote);
+  font-style: italic;
+  margin: 1.5rem 0;
+}
+
+.prose-content ul,
+.prose-content ol {
+  margin-bottom: 1.25rem;
+  padding-left: 1.5rem;
+  line-height: 1.85;
+  color: var(--color-prose);
+}
+
+.prose-content ul {
+  list-style-type: disc;
+}
+
+.prose-content ol {
+  list-style-type: decimal;
+}
+
+.prose-content li {
+  margin-bottom: 0.35rem;
+}
+
+.prose-content a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.prose-content a:hover {
+  color: var(--color-accent-dark);
+}
+
+.prose-content code {
+  font-size: 0.875em;
+  background-color: var(--color-code-bg);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  color: var(--color-prose-heading);
+}
+
+.prose-content pre {
+  background-color: var(--color-code-bg);
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  margin-bottom: 1.25rem;
+  border: 1px solid var(--color-border);
+}
+
+.prose-content pre code {
+  background: none;
+  padding: 0;
+}
+
+.prose-content img {
+  border-radius: 0.75rem;
+  margin: 1.5rem 0;
+  max-width: 100%;
+}
+
+.prose-content hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 2rem 0;
+}
+
+/* ===== 主按钮 ===== */
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark));
+  color: #fff;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.btn-primary:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}

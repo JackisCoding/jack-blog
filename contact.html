@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#292929" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1A1A1A" media="(prefers-color-scheme: dark)">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="description" content="联系 Jack — 社交媒体与邮箱">
+  <title>联系 — Jack</title>
+  <script>
+    (function () {
+      var t = localStorage.getItem("blog-theme");
+      if (t === "dark" || (!t && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      } else {
+        document.documentElement.setAttribute("data-theme", "light");
+      }
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            warm: {
+              bg: "var(--color-bg)",
+              card: "var(--color-card)",
+              dark: "var(--color-dark)",
+              body: "var(--color-body)",
+              muted: "var(--color-muted)",
+              accent: "var(--color-accent)",
+              "accent-dark": "var(--color-accent-dark)",
+              border: "var(--color-border)",
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="css/custom.css">
+</head>
+<body class="bg-warm-bg text-warm-body min-h-screen flex flex-col tech-bg">
+
+  <header class="site-header sticky top-0 z-50 backdrop-blur-md border-b border-warm-border">
+    <nav class="max-w-4xl mx-auto px-4 sm:px-6 py-3" aria-label="主导航">
+      <div class="flex items-center gap-3 sm:gap-4">
+        <a href="index.html" class="text-lg font-semibold text-warm-dark tracking-wide shrink-0">Jack</a>
+        <div class="hidden md:flex items-center gap-6">
+          <a href="index.html" class="nav-link text-sm text-warm-body hover:text-warm-dark transition-colors">首页</a>
+          <a href="about.html" class="nav-link text-sm text-warm-body hover:text-warm-dark transition-colors">关于我</a>
+          <a href="articles.html" class="nav-link text-sm text-warm-body hover:text-warm-dark transition-colors">文章</a>
+          <a href="contact.html" class="nav-link text-sm text-warm-body hover:text-warm-dark transition-colors">联系</a>
+        </div>
+        <div class="flex items-center gap-2 sm:gap-3 ml-auto min-w-0">
+          <div class="search-wrap flex-1 min-w-0 max-w-[200px] sm:max-w-xs hidden sm:block">
+            <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"/>
+            </svg>
+            <input type="search" class="search-input" placeholder="搜索文章..." aria-label="搜索文章">
+          </div>
+          <button type="button" id="theme-toggle" class="theme-toggle" aria-label="切换深色/浅色模式">
+            <svg class="icon-moon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+            <svg class="icon-sun" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="5" stroke-width="2"/>
+              <path stroke-linecap="round" stroke-width="2" d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+            </svg>
+          </button>
+          <button id="menu-btn" class="md:hidden p-2 text-warm-dark rounded-lg hover:bg-warm-accent/10 transition-colors" aria-label="打开菜单" aria-expanded="false">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="sm:hidden mt-3 search-wrap">
+        <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"/>
+        </svg>
+        <input type="search" class="search-input" placeholder="搜索文章..." aria-label="搜索文章">
+      </div>
+      <div id="mobile-menu" class="md:hidden hidden-menu border-t border-warm-border mt-3">
+        <div class="pt-3 pb-4 flex flex-col gap-3">
+          <a href="index.html" class="nav-link text-sm text-warm-body px-1">首页</a>
+          <a href="about.html" class="nav-link text-sm text-warm-body px-1">关于我</a>
+          <a href="articles.html" class="nav-link text-sm text-warm-body px-1">文章</a>
+          <a href="contact.html" class="nav-link text-sm text-warm-body px-1">联系</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="flex-1 page-enter">
+    <div class="page-banner">
+      <div class="page-banner__bg" aria-hidden="true"></div>
+      <div class="page-banner__overlay" aria-hidden="true"></div>
+      <div class="page-banner__content max-w-4xl mx-auto px-4 sm:px-6">
+        <h1 class="text-2xl md:text-3xl font-bold mb-3">联系我</h1>
+        <p>交流技术、聊聊生活，或者只是打个招呼</p>
+      </div>
+    </div>
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-12 md:py-16">
+
+      <section class="grid sm:grid-cols-2 gap-4 mb-12">
+        <a href="https://github.com/JackisCoding" target="_blank" rel="noopener noreferrer" class="social-link flex items-center gap-4 bg-warm-card rounded-2xl p-6 border border-warm-border hover:border-warm-accent/40">
+          <div class="w-12 h-12 rounded-xl bg-warm-bg flex items-center justify-center shrink-0">
+            <svg class="w-6 h-6 text-warm-dark" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-medium text-warm-dark">GitHub</h3>
+            <p class="text-sm text-warm-muted">github.com/JackisCoding</p>
+          </div>
+        </a>
+
+        <a href="https://weibo.com/" target="_blank" rel="noopener noreferrer" class="social-link flex items-center gap-4 bg-warm-card rounded-2xl p-6 border border-warm-border hover:border-warm-accent/40">
+          <div class="w-12 h-12 rounded-xl bg-warm-bg flex items-center justify-center shrink-0">
+            <svg class="w-6 h-6 text-warm-accent" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M10.098 20.323c-3.977.391-7.414-1.406-7.672-4.02-.259-2.609 2.759-5.047 6.74-5.441 3.966-.394 7.415 1.381 7.674 3.991.259 2.6-2.759 5.078-6.742 5.47z"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-medium text-warm-dark">微博</h3>
+            <p class="text-sm text-warm-muted">日常动态与随想</p>
+          </div>
+        </a>
+
+        <a href="mailto:hello@example.com" class="social-link flex items-center gap-4 bg-warm-card rounded-2xl p-6 border border-warm-border hover:border-warm-accent/40">
+          <div class="w-12 h-12 rounded-xl bg-warm-bg flex items-center justify-center shrink-0">
+            <svg class="w-6 h-6 text-warm-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-medium text-warm-dark">邮箱</h3>
+            <p class="text-sm text-warm-muted">hello@example.com</p>
+          </div>
+        </a>
+
+        <a href="https://twitter.com/" target="_blank" rel="noopener noreferrer" class="social-link flex items-center gap-4 bg-warm-card rounded-2xl p-6 border border-warm-border hover:border-warm-accent/40">
+          <div class="w-12 h-12 rounded-xl bg-warm-bg flex items-center justify-center shrink-0">
+            <svg class="w-6 h-6 text-warm-dark" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-medium text-warm-dark">X (Twitter)</h3>
+            <p class="text-sm text-warm-muted">英文动态与技术分享</p>
+          </div>
+        </a>
+      </section>
+
+      <section class="bg-warm-card rounded-2xl p-6 md:p-8 border border-warm-border text-center">
+        <p class="text-warm-body leading-relaxed mb-2">我通常会在 1–2 个工作日内回复邮件。</p>
+        <p class="text-sm text-warm-muted">如果是技术交流，欢迎附上具体背景，方便更高效地对话。</p>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="border-t border-warm-border">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-8 text-center text-sm text-warm-muted">
+      <p>&copy; <span id="current-year"></span> Jack. 用心记录，慢慢生活。</p>
+    </div>
+  </footer>
+
+  <script src="js/theme.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
