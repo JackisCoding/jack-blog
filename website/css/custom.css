@@ -1096,8 +1096,8 @@ html.theme-animate *::after {
 
   .fx-physics {
     display: block;
-    left: auto;
-    right: calc(0.5rem + env(safe-area-inset-right, 0px));
+    left: calc(0.5rem + env(safe-area-inset-left, 0px));
+    right: auto;
     bottom: calc(2.5rem + env(safe-area-inset-bottom, 0px));
     width: min(220px, 42vw);
     height: 148px;
@@ -1209,6 +1209,112 @@ html.theme-animate *::after {
   .fx-particles,
   .fx-stickfight {
     display: none !important;
+  }
+}
+
+/* ===== Jack 标题栏彩蛋 ===== */
+.jack-brand-egg {
+  position: relative;
+  display: inline-block;
+  text-decoration: none !important;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.jack-brand-egg.jack-brand-hit {
+  animation: jackBrandJolt 0.38s ease;
+}
+
+.jack-brand-egg::before,
+.jack-brand-egg::after {
+  content: attr(data-jack-text);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+  font: inherit;
+  letter-spacing: inherit;
+}
+
+.jack-brand-egg.jack-brand-hit::before {
+  opacity: 0.8;
+  color: #00e5ff;
+  animation: jackRgbL 0.38s ease;
+}
+
+.jack-brand-egg.jack-brand-hit::after {
+  opacity: 0.8;
+  color: #ff2d55;
+  animation: jackRgbR 0.38s ease;
+}
+
+@keyframes jackBrandJolt {
+  0%, 100% { transform: translate(0, 0); }
+  15% { transform: translate(-2px, 1px) rotate(-1deg); }
+  30% { transform: translate(2px, -1px) rotate(1deg); }
+  45% { transform: translate(-1px, -2px); }
+  60% { transform: translate(1px, 2px) rotate(0.5deg); }
+}
+
+@keyframes jackRgbL {
+  0%, 100% { transform: translate(0, 0); }
+  40% { transform: translate(-3px, 0); }
+}
+
+@keyframes jackRgbR {
+  0%, 100% { transform: translate(0, 0); }
+  40% { transform: translate(3px, 0); }
+}
+
+.jack-crack-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99980;
+  pointer-events: none;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.jack-shatter-burst {
+  position: fixed;
+  inset: 0;
+  z-index: 99995;
+  pointer-events: none;
+}
+
+html.jack-egg-active {
+  overflow: hidden;
+}
+
+html.jack-egg-shatter {
+  overflow: hidden;
+}
+
+html.jack-egg-shatter .jack-shatter-piece {
+  animation: jackPieceFly 1.55s cubic-bezier(0.45, 0, 0.85, 0.4) forwards;
+  animation-delay: var(--jack-delay, 0s);
+  transform-origin: center center;
+  will-change: transform, opacity, filter;
+}
+
+@keyframes jackPieceFly {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+  35% {
+    filter: blur(0);
+  }
+  100% {
+    transform:
+      translate(calc(var(--jack-dx, 0) * 55vw), calc(var(--jack-dy, 0) * 55vh))
+      rotate(var(--jack-rot, 0deg))
+      scale(0.15);
+    opacity: 0;
+    filter: blur(10px) brightness(1.35);
   }
 }
 
