@@ -570,6 +570,16 @@ html.theme-animate *::after {
 }
 
 .fx-cursor-dot,
+.fx-cursor-ring {
+  opacity: 0;
+}
+
+.fx-cursor-dot.fx-cursor-visible,
+.fx-cursor-ring.fx-cursor-visible {
+  opacity: 1;
+}
+
+.fx-cursor-dot,
 .fx-cursor-ring,
 .fx-cursor-ripple {
   position: fixed;

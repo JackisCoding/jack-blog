@@ -19,6 +19,7 @@ var Fx = (function () {
   var cursorRing = null;
   var glowEl = null;
   var hovering = false;
+  var cursorReady = false;
 
   function init() {
     if (reduced) return;
